@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+{% block content %}
+<main class="page-auth">
+  <section class="auth-hero" style="background-image: url('{% static 'image/homepage/cover_2.jpg' %}');"></section>
+  <div class="auth-card">
+    <div class="auth-brand">
+      <h2 class="auth-title">Request for Services to<br>CATS–MIST (EECE)</h2>
+      <p class="auth-sub">Login if you already have an account</p>
+    </div>
+
+    <form method="post" class="auth-form" action="{% url 'login' %}">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <label for="id_username">Email or Phone Number</label>
+      <input type="text" name="username" id="id_username" placeholder="Email or Phone Number" value="{{ form.username.value|default:'' }}" autocomplete="username">
+      {% if form.username.errors %}
+        <div class="field-error">{{ form.username.errors|striptags }}</div>
+      {% endif %}
+
+      <label for="id_password">Password</label>
+      <div class="input-with-toggle">
+        <input type="password" name="password" id="id_password" placeholder="Password" autocomplete="current-password">
+        <button type="button" class="toggle-pass" data-target="id_password">Show</button>
+      </div>
+      {% if form.password.errors %}
+        <div class="field-error">{{ form.password.errors|striptags }}</div>
+      {% endif %}
+
+      <div class="auth-meta">
+<!-- -        <a href="#" class="link small">Forgot your password?</a> -->
++        <a href="{% url 'password_reset' %}" class="link small">Forgot your password?</a>
+      </div>
+
+      <div class="captcha-box" aria-label="Human verification">
+        <label class="captcha-label">
+          <input type="checkbox" id="captcha_login" name="captcha" required>
+          <span class="text">I'm not a robot</span>
+        </label>
+        <div class="badge">reCAPTCHA</div>
+      </div>
+
+      <div class="auth-actions">
+        <button type="submit" class="btn btn-primary" data-requires-captcha>Log in</button>
+      </div>
+
+      <div class="auth-sub auth-sub-center">
+        <span>Sign up if you are a new client</span>
+        <a class="btn btn-success" href="{% url 'signup' %}">Sign up</a>
+      </div>
+    </form>
+  </div>
+</main>
+<script src="{% static 'js/auth.js' %}"></script>
+{% endblock %}

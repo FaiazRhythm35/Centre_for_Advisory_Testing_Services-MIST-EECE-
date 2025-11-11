@@ -1,0 +1,346 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body_class %}page-home{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<link rel="stylesheet" href="{% static 'css/home_theme.css' %}?v=3">
+{% endblock %}
+{% block content %}
+
+<section class="hero hero-slider" id="top">
+  <div class="slides" id="homeSlider">
+    <div class="slide active"><img src="{% static 'image/homepage/cover_1.jpg' %}" alt="CATS–MIST EECE cover 1"></div>
+    <div class="slide"><img src="{% static 'image/homepage/cover_2.jpg' %}" alt="CATS–MIST EECE cover 2"></div>
+    <div class="slide"><img src="{% static 'image/homepage/cover_3.jpg' %}" alt="CATS–MIST EECE cover 3"></div>
+    <div class="slide"><img src="{% static 'image/homepage/image01.jpg' %}" alt="CATS–MIST EECE lab"></div>
+    <div class="slide"><img src="{% static 'image/homepage/image02.jpg' %}" alt="CATS–MIST EECE campus"></div>
+  </div>
+  <div class="overlay">
+    <div class="overlay-content container">
+      <h1>Quality, Safety and Trusted Testing Services</h1>
+      <p class="sub">Centre for Advisory & Testing Services (CATS) — MIST EECE delivers reliable consultancy, advanced lab testing and expert verification across Bangladesh.</p>
+      <div class="cta">
+        <a class="btn-cta" href="{% url 'test_rates' %}">Explore Test Rates</a>
+        <a class="btn-ghost" href="{% url 'projects' %}">View Projects</a>
+      </div>
+    </div>
+  </div>
+  <div class="dots" id="homeSliderDots" aria-hidden="true"></div>
+</section>
+
+<section class="section two-col">
+  <div class="container cols">
+    <div>
+      <h3>About CATS–MIST (EECE)</h3>
+      <p>
+        CATS-MIST (EECE) was established in 2017 by EECE Department with a view to providing consultancy, advisory and testing services to public and private organizations including personal in the areas of electrical, electronic and communication engineering and to conduct collaboration and research activities with national and international academia and industry. With the availability of expert manpower, infrastructure and lab facilities, the outfit is capable to provide consultancy service related to vetting/ evaluation of technical specification, carry out field test, inspection/survey and vetting of design, drawings, test reports etc. in respect of electrical, electronic, and communication equipment as per the national and global standards.
+      </p>
+      <a class="btn-outline" href="{% url 'about' %}">Read More</a>
+    </div>
+    <div>
+      <h3>Report Verification</h3>
+      <form id="verifyForm" class="verify-form" action="#" method="get" onsubmit="return false;">
+        <input id="verifyCode" name="code" type="text" placeholder="Type 8 digit code" />
+        <button class="btn" type="submit">Verify a Test Report</button>
+      </form>
+      <div id="verifyResult" class="verify-result" aria-live="polite" style="margin-top:8px"></div>
+    </div>
+  </div>
+</section>
+
+<section class="section stats">
+  <div class="container">
+    <h3>Concerned about ‘quality & safety’ and provides the most reliable services</h3>
+    <div class="stat-cards">
+      <div class="stat"><div class="big">793+</div><div>Clients</div></div>
+      <div class="stat"><div class="big">282+</div><div>Tests</div></div>
+      <div class="stat"><div class="big">42+</div><div>Experts</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section trusted-by" id="trusted">
+  <div class="container">
+    <div class="trusted-header">
+      <h3 style="margin:0">CATS–MIST (EECE)</h3>
+      <span class="label">Trusted By</span>
+    </div>
+    <div class="logo-grid">
+      <div class="logo-item"><img src="{% static 'image/clients/BBS Cables.png' %}" alt="BBS Cables" /></div>
+      <div class="logo-item"><img src="{% static 'image/clients/BRB Cable Industries Ltd.jpg' %}" alt="BRB Cable Industries Ltd" /></div>
+      <div class="logo-item"><img src="{% static 'image/clients/Bizli Cable Industries.jpeg' %}" alt="Bizli Cable Industries" /></div>
+      <div class="logo-item"><img src="{% static 'image/clients/Department of Public Health Engineering (DPHE).png' %}" alt="Department of Public Health Engineering (DPHE)" /></div>
+      <div class="logo-item"><img src="{% static 'image/clients/Evana Cable Industries.png' %}" alt="Evana Cable Industries" /></div>
+      <div class="logo-item"><img src="{% static 'image/clients/Hamco Batteries Industries Ltd.jpg' %}" alt="Hamco Batteries Industries Ltd" /></div>
+      <div class="logo-item"><img src="{% static 'image/clients/Military Engineering Services (MES).png' %}" alt="Military Engineering Services (MES)" /></div>
+      <div class="logo-item"><img src="{% static 'image/clients/Poly Cable Industries Ltd.jpeg' %}" alt="Poly Cable Industries Ltd" /></div>
+      <div class="logo-item"><img src="{% static 'image/clients/Public Works Department (PWD).png' %}" alt="Public Works Department (PWD)" /></div>
+      <div class="logo-item"><img src="{% static 'image/clients/Rural Electrification Board (REB).png' %}" alt="Rural Electrification Board (REB)" /></div>
+      <div class="logo-item"><img src="{% static 'image/clients/Revere Power Ltd.jpg' %}" alt="Revere Power Ltd" /></div>
+      <div class="logo-item"><img src="{% static 'image/clients/Satco Electrical Industries Ltd.png' %}" alt="Satco Electrical Industries Ltd" /></div>
+      <div class="logo-item"><img src="{% static 'image/clients/Super Star Renewable Company.png' %}" alt="Super Star Renewable Company" /></div>
+      <div class="logo-item"><img src="{% static 'image/clients/Super-Sign Cable Ltd.png' %}" alt="Super-Sign Cable Ltd" /></div>
+      <div class="logo-item"><img src="{% static 'image/clients/System Engineering Ltd.png' %}" alt="System Engineering Ltd" /></div>
+      <div class="logo-item"><img src="{% static 'image/clients/Rahim Afroz.png' %}" alt="Rahim Afroz" /></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="projects">
+  <div class="container">
+    <h2>Our Landmarking Projects</h2>
+    <p class="sub">CATS–MIST (EECE) provides strategic solutions through advanced research and sustainable infrastructure development across the nation</p>
+
+    <div class="cards">
+      <article class="card">
+        <img class="zoomout" src="{% static 'image/Project/BRB Cable 2.jpg' %}" alt="BRB Cable Industries Ltd factory inspection (11KV 300 & 500 RM cable)" />
+        <div class="card-body">
+          CATS- MIST (EECE) team's visit to BRB Cable Industries Ltd Factory at Kustia, to inspect partial discharge, high voltage withstand, insulation, DC resistance etc of 11KV 300 & 500 RM cable
+        </div>
+      </article>
+      <article class="card">
+        <img src="{% static 'image/Project/Basic Power Engineering Ltd.jpg' %}" alt="Basic Power Engg Ltd panel and LBS testing" />
+        <div class="card-body">
+          CATS- MIST (EECE) team's factory visit in Basic Power Engg Ltd at Tongi, to inspect and test LT /HT Panel and Load Break Switch (LBS) of 11 /0.415 KV Sub-station of Mirpur Cantonment
+        </div>
+      </article>
+      <article class="card">
+        <img src="{% static 'image/Project/Adex engineering Ltd.jpg' %}" alt="Adex engineering Ltd performance assessment" />
+        <div class="card-body">
+          CATS- MIST (EECE) team was carrying out a performance assessment on a 1000 kVA CRT transformer at factory site
+        </div>
+      </article>
+      <article class="card">
+        <img src="{% static 'image/Project/Energypac engineering Ltd.jpg' %}" alt="Energypac engineering Ltd" />
+        <div class="card-body">
+          CATS- MIST (EECE) team was ssessing a 1000 KVA CRT transformer in presence of JAICA consultant
+        </div>
+      </article>
+    </div>
+    <div class="center">
+      <a class="btn" href="{% url 'projects' %}">See all Projects</a>
+    </div>
+  </div>
+</section>
+
+<!-- <section class="section payment" id="fees">
+  <div class="container">
+    <div class="payment-banner">
+      <div>
+        <h3>Online Payment</h3>
+        <p>Pay your test fees online. Find the payment option after creating a project. Choose any payment option that is suitable for you.</p>
+      </div>
+      <div class="payment-icons">
+        <span class="tag">Visa</span>
+        <span class="tag">Mastercard</span>
+        <span class="tag">bkash</span>
+        <span class="tag">Nagad</span>
+        <span class="tag">City</span>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+<section class="section" id="equipment">
+  <div class="container">
+    <h2>Glimpses of modern testing equipment</h2>
+    <div class="equipment-grid">
+      <!-- 1. Relay test set -->
+      <article class="card">
+        <img src="{% static 'image/Equipments/Relay test set.jpg' %}" alt="Relay test set – Ponovo, China" />
+        <div class="card-body">
+          <h4>Relay test set <span class="small">Ponovo, China</span></h4>
+          <p>Used for measuring relay trip time.</p>
+        </div>
+      </article>
+      <!-- 2. High voltage testing equipment -->
+      <article class="card">
+        <img src="{% static 'image/Equipments/High voltage testing equipment.jpg' %}" alt="High voltage testing equipment – India" />
+        <div class="card-body">
+          <h4>High voltage testing equipment <span class="small">India</span></h4>
+          <p>Used for partial discharge test for transformer, cable, lightning arrestor, insulator etc.</p>
+        </div>
+      </article>
+      <!-- 3. Voltage- up transformer -->
+      <article class="card">
+        <img src="{% static 'image/Equipments/Voltage- up transformer.jpg' %}" alt="Voltage-up transformer" />
+        <div class="card-body">
+          <h4>Voltage- up transformer</h4>
+          <p>Used for full load loss of power transformer, distribution transformer etc.</p>
+        </div>
+      </article>
+      <!-- 4. CT/PT test with variac & current injector -->
+      <article class="card">
+        <img src="{% static 'image/Equipments/CT or PT test with variac and current injector.jpg' %}" alt="CT/PT test with variac and current injector" />
+        <div class="card-body">
+          <h4>CT/PT test with variac &amp; current injector</h4>
+          <p>Used for ratio, insulation, polarity test of CT/PT; loading test of MCB, MCCB, VCB, ACB, power cable etc.</p>
+        </div>
+      </article>
+      <!-- 5. High Voltage Impulse Generator -->
+      <article class="card">
+        <img src="{% static 'image/Equipments/High Voltage Impulse Generator.jpg' %}" alt="High Voltage Impulse Generator – HIGHVOLT, Germany" />
+        <div class="card-body">
+          <h4>High Voltage Impulse Generator <span class="small">HIGHVOLT, Germany</span></h4>
+          <p>Impulse test for applied voltage: 75KV, 170KV, 232KV, 300KV etc. Can perform power lightning withstand test of distribution transformer 11/0.415 KV up to 5 MVA, power transformer 33/11KV up to 50 MVA, cable, lightning arrestor etc.</p>
+        </div>
+      </article>
+      <!-- 6. High Voltage Test Set -->
+      <article class="card">
+        <img src="{% static 'image/Equipments/High Voltage Test Set.jpg' %}" alt="High Voltage Test Set – Megger, Germany" />
+        <div class="card-body">
+          <h4>High Voltage Test Set <span class="small">Megger, Germany</span></h4>
+          <p>Can perform power frequency withstand test and measure breakdown voltage, puncture voltage etc. up to 200 KV.</p>
+        </div>
+      </article>
+      <!-- 7. Insulation Test Set -->
+      <article class="card">
+        <img src="{% static 'image/Equipments/Insulation Test Set.jpg' %}" alt="Insulation Test Set – Megger, UK" />
+        <div class="card-body">
+          <h4>Insulation Test Set <span class="small">Megger, UK</span></h4>
+          <p>Measures insulation resistance up to 10 KV. Capable of timed insulation resistance, Polarization Index (PI), Stepped Voltage (SV), Dielectric Absorption Resistance (DAR), Dielectric Discharge (DD) tests.</p>
+        </div>
+      </article>
+      <!-- 8. Portable Oil Test Set -->
+      <article class="card">
+        <img src="{% static 'image/Equipments/Portable Oil Test Set.jpg' %}" alt="Portable Oil Test Set – Megger, UK" />
+        <div class="card-body">
+          <h4>Portable Oil Test Set <span class="small">Megger, UK</span></h4>
+          <p>Measures breakdown voltage of transformer oil up to 100 KV.</p>
+        </div>
+      </article>
+      <!-- 9. Loss Measurement Test Bench -->
+      <article class="card">
+        <img src="{% static 'image/Equipments/Loss Measurement Test Bench.jpg' %}" alt="Loss Measurement Test Bench – Yakogawa, Japan" />
+        <div class="card-body">
+          <h4>Loss Measurement Test Bench <span class="small">Yakogawa, Japan</span></h4>
+          <p>Measures load loss, no-load loss, harmonic test, over induced tests etc. Capable of tests on distribution transformer 11/0.415KV, 5MVA; power transformer 33/11KV, 50MVA; and auxiliary transformer.</p>
+        </div>
+      </article>
+      <!-- 10. Megger Portable Power Quality Analyzer -->
+      <article class="card">
+        <img src="{% static 'image/Equipments/Megger Portable Power Quality Analyzer.jpg' %}" alt="Megger Portable Power Quality Analyzer – Megger, UK" />
+        <div class="card-body">
+          <h4>Megger Portable Power Quality Analyzer <span class="small">Megger, UK</span></h4>
+          <p>Measures power parameters (KW, KVAR, KVA, DPF, TPF), energy parameters (KWH, KVARH, KVAH), voltage/current sags and swells, transients down to 1 ms, harmonics, phase angle deviation etc.</p>
+        </div>
+      </article>
+      <!-- 11. Induced over voltage test set -->
+      <article class="card">
+        <img src="{% static 'image/Equipments/Induced over voltage test set.jpg' %}" alt="Induced over voltage test set – NTPL, India" />
+        <div class="card-body">
+          <h4>Induced over voltage test set <span class="small">NTPL, India</span></h4>
+          <p>Tests withstand capability at double voltage, double/triple/quadruple frequency of power and distribution transformer for 60 seconds.</p>
+        </div>
+      </article>
+      <!-- 12. Electrostatic Voltmeter -->
+      <article class="card">
+        <img src="{% static 'image/Equipments/Electrostatic Voltmeter.png' %}" alt="Electrostatic Voltmeter – Phenix, USA" />
+        <div class="card-body">
+          <h4>Electrostatic Voltmeter <span class="small">Phenix, USA</span></h4>
+          <p>Measures voltage up to 40 KV.</p>
+        </div>
+      </article>
+      <!-- 13. Digital Clamp on Power Meter -->
+      <article class="card">
+        <img src="{% static 'image/Equipments/Digital Clamp on Power Meter.jpg' %}" alt="Digital Clamp on Power Meter – Yakogawa, Japan" />
+        <div class="card-body">
+          <h4>Digital Clamp on Power Meter <span class="small">Yakogawa, Japan</span></h4>
+          <p>Measures voltage up to 600V and current up to 1000 A.</p>
+        </div>
+      </article>
+      <!-- 14. Earth Leakage Clamp Meter -->
+      <article class="card">
+        <img src="{% static 'image/Equipments/Earth Leakage Clamp Meter.jpg' %}" alt="Earth Leakage Clamp Meter – Megger, UK" />
+        <div class="card-body">
+          <h4>Earth Leakage Clamp Meter <span class="small">Megger, UK</span></h4>
+          <p>Measures leakage current during high voltage application up to 300A.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<a href="#top" class="back-to-top">↑</a>
+
+<script>
+(function(){
+  const form = document.getElementById('verifyForm');
+  const input = document.getElementById('verifyCode');
+  const resultEl = document.getElementById('verifyResult');
+  if (!form || !input || !resultEl) return;
+  function show(msg, ok){
+    resultEl.textContent = msg;
+    resultEl.style.color = ok ? '#0a7a2e' : '#b91c1c';
+  }
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const code = (input.value || '').trim();
+    if (!/^\d{8}$/.test(code)) { show('Please enter a valid 8-digit code.', false); return; }
+    try {
+      const resp = await fetch('{% url "verify_report" %}?code='+encodeURIComponent(code));
+      const data = await resp.json();
+      if (resp.ok && data.ok) {
+        const typeLabel = data.type === 'lab' ? 'Lab Test Report' : 'Consultancy Report';
+        const ref = data.reference_number ? ' • Ref: '+data.reference_number : '';
+        show('Verified '+typeLabel+' — '+data.project_name+ref, true);
+      } else {
+        show('No matched or not delivered yet.', false);
+      }
+    } catch(err) {
+      show('Verification failed. Please try again.', false);
+    }
+  });
+})();
+</script>
+
+<script>
+(function(){
+  const slider = document.getElementById('homeSlider');
+  if(!slider) return;
+  const slides = Array.from(slider.querySelectorAll('.slide'));
+  const dotsWrap = document.getElementById('homeSliderDots');
+  let current = 0;
+  let intervalTimer = null;
+  let initialTimeout = null;
+
+  function renderDots(){
+    dotsWrap.innerHTML = '';
+    slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'dot' + (i === current ? ' active' : '');
+      dot.type = 'button';
+      dot.setAttribute('aria-label', 'Go to slide ' + (i+1));
+      dot.addEventListener('click', () => { goTo(i); restart(); });
+      dotsWrap.appendChild(dot);
+    });
+  }
+  function goTo(index){
+    slides[current].classList.remove('active');
+    current = (index + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    renderDots();
+  }
+  function next(){ goTo(current + 1); }
+  function start(){
+    initialTimeout = setTimeout(() => {
+      next();
+      intervalTimer = setInterval(next, 5000);
+    }, 3000);
+  }
+  function stop(){
+    if(initialTimeout){ clearTimeout(initialTimeout); initialTimeout = null; }
+    if(intervalTimer){ clearInterval(intervalTimer); intervalTimer = null; }
+  }
+  function restart(){ stop(); start(); }
+
+  renderDots();
+  start();
+})();
+</script>
+ 
+ {% endblock %}

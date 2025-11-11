@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body_class %}page-about{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<style>
+.page-about .page-header{background:#0a1f57;color:#fff;padding:24px 0}
+.page-about .page-header .sub{color:#bfdbfe}
+.page-about .section{padding:24px 0}
+.page-about .container{max-width:1000px;margin:0 auto;padding:0 16px}
+.page-about h2{color:#0a1f57;margin:0 0 12px 0}
+.page-about h3{color:#0a1f57;margin:20px 0 8px 0}
+.page-about p{color:#334155;line-height:1.7}
+.page-about ul{color:#334155;margin:0 0 10px 20px}
+.page-about .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 22px rgba(20,24,38,.08);padding:18px}
+</style>
+{% endblock %}
+{% block content %}
+
+<section class="page-header">
+  <div class="container">
+    <h2>About CATS–MIST (EECE)</h2>
+    <p class="sub">Department overview, faculty & specializations, laboratories, and CATS–MIST establishment.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="card">
+      <h3>Department Overview</h3>
+      <p>
+        Electrical Electronic and Communication Engineering (EECE) Department of MIST started functioning in 2003 under the faculty of Electrical and Computer Engineering. 858 students have already completed graduation and currently 287 students are receiving education in the undergraduate level. Post graduate program under this department started functioning since October 2013. 23 students have already earned Msc/ MEngg degree and presently 88 and 08 students are pursuing for Msc/ MEngg and PhD degree respectively in this department. The department got accreditation from BAETE since September 2010.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="card">
+      <h3>Faculty & Specializations</h3>
+      <p>
+        EECE Department has 28 faculty members of which 05 are PhD qualified. All the faculty members are competent having diverse experiences in three fields of areas: Power, Electronics and Communication.
+      </p>
+      <p>
+        Major areas of specialties of EECE Department faculties are: power system analysis, renewable energy, Distribution Side Management (DSM), smart grid, energy market and smart energy management system in the power field, VLSI technology, advanced semiconductor device modeling and thin film technology, photo voltaic cells and materials in the electronics field, satellite navigation, space engineering, radar detection and tracking, optical fiber communication, free space optical communication and wired and wireless communication in the communication field.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="card">
+      <h3>Laboratories</h3>
+      <p>
+        The department has 09 well established laboratories and 14 laboratories with advance technology are going to be established soon.
+      </p>
+      <p>
+        The existing labs are: Electrical Circuit Lab, High Voltage Lab, Power System and Switchgear Protection Lab, Digital Signal :Processing Lab, Electrical Machine Lab, Electronics and Digital Electronics Lab, VLSI Lab, Analog and Digital Communication Lab, Satellite Communication & Microwave Engineering Lab.
+      </p>
+      <p>
+        These laboratories have well experienced laboratory technicians and are equipped with modern gadgets and test facilities which contribute in providing real-life and goal oriented education to the students to achieve Course Outcome (CO), Program Outcome (PO) etc. as per requirement of the OBE learning system of the Washington Accord. The inclusion of the new labs will provide wider opportunities in carrying out extensive research by the students of postgraduate level and academia in meeting goal oriented specific requirement of various organizations, industry sector etc. of the country.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="card">
+      <h3>CATS–MIST (EECE)</h3>
+      <p>
+        CATS-MIST (EECE) was established in 2017 by EECE Department with a view to providing consultancy, advisory and testing services to public and private organizations including personal in the areas of electrical, electronic and communication engineering and to conduct collaboration and research activities with national and international academia and industry.
+      </p>
+      <p>
+        With the availability of expert manpower, infrastructure and lab facilities, the outfit is capable to provide consultancy service related to vetting/ evaluation of technical specification, carry out field test, inspection/survey and vetting of design, drawings, test reports etc. in respect of electrical, electronic, and communication equipment as per the national and global standards.
+      </p>
+      <p>
+        <a class="btn-outline" href="{% url 'home' %}">Back to Homepage</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

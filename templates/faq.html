@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body_class %}page-faq{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/faq.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="page-faq">
+  <header class="faq-header">
+    <div class="container">
+      <h1>Frequently asked questions</h1>
+      <p class="sub">Find the answer for your general questions and FAQs for the Centre for Advisory & Testing Services CATS–MIST (CE).</p>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="container">
+      <div class="faq-list">
+        <details class="faq-item" open>
+          <summary><span class="icon">❓</span> How to Sign up?</summary>
+          <div class="faq-content">
+            Open any browser and type <strong>https://eece-cats.mist.ac.bd/</strong> then click on <em>Sign up</em>. Enter your full name, email, organization, phone number and present address. Then type your password and click on <em>Sign up</em>. Your account will be created.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="icon">🔐</span> How to log in?</summary>
+          <div class="faq-content">
+            After signing up, go to the homepage and click <em>Log in</em>. Enter your email and password to access your account.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="icon">🔁</span> How to reset your password?</summary>
+          <div class="faq-content">
+            On the login page, click <em>Forgot Password</em> and follow the instructions sent to your email to reset your password.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="icon">🧪</span> How to request a lab test?</summary>
+          <div class="faq-content">
+            Create a project from your dashboard, provide sample details, and submit your test request. Our reception desk will confirm your slot and sample submission.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="icon">📋</span> How to request a consultancy?</summary>
+          <div class="faq-content">
+            From your account, go to <em>Consultancy</em>, add scope and documents, then submit the request. Our team will reach out to coordinate.
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary><span class="icon">🏦</span> How to pay via bank deposit?</summary>
+          <div class="faq-content">
+            After receiving your invoice, deposit the amount to the mentioned bank account and upload the deposit slip to your project to confirm payment.
+          </div>
+        </details>
+
+        <!-- <details class="faq-item">
+          <summary><span class="icon">💳</span> How to pay online?</summary>
+          <div class="faq-content">
+            Use online payment options (Visa, Mastercard, bkash, Nagad, City). Find the payment button inside your project and complete the checkout.
+          </div>
+        </details> -->
+
+        <details class="faq-item">
+          <summary><span class="icon">📄</span> How to collect your lab test report?</summary>
+          <div class="faq-content">
+            Report collection is available Sunday–Thursday, 8:00 AM – 2:30 PM (except govt and weekly holidays). Visit the address below or use report delivery instructions.
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  
+
+  <a href="#top" class="back-to-top" aria-label="Back to top" title="Back to top">↑</a>
+</main>
+{% endblock %}

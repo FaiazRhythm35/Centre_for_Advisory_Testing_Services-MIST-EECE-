@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body_class %}page-projects{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/projects.css' %}">
+{% endblock %}
+{% block content %}
+
+<section class="page-header">
+  <div class="container page-header__grid">
+    <div>
+      <h2>Our Landmarking Projects</h2>
+      <p class="sub">CATS–MIST (EECE) provides strategic solutions through advanced research and sustainable infrastructure development across the nation</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="projects-overview">
+  <div class="container">
+    <h3>Completed Routine Works</h3>
+    <p>So far CATS-MIST (EECE) has carried out various transformer tests of capacity ranging from 50 KVA to 5 MVA, 11/0.415 KV transformer. The performed tests are: high voltage withstand test, no load loss and full load loss test, insulation and winding resistance test, vector group test, insulation resistance test, DC resistance test, high voltage withstand test, temperature rise test, copper purity test and cable test of both domestic and power cables. Other tests include: Solar pump controller performance test, domestic electrical appliance test, performance test of switches, sockets, MCBs, MCCBs, VCBs, ACBs, LT/HT panel test, PFI test, generator/motor performance test and performance test for measuring instruments.</p>
+    <h3>Completed Consultancy Services</h3>
+    <p>Currently the outfit has provided consultancy services to 24 Engineer Construction Battalion (ECB) of Dhaka Cantonment in laying high voltage underground cable from DESCO Ring Main Unit (RMU) to 11 KV sub-station at Mirpur Cantonment. It carried out detailed study of user requirement and then prepared technical specification of cable, the layout plan, cable trenches, Single Line Diagram (SLD), specification of HT switchgear panel and location plan etc. Team of the outfit visited BRB Cable Industries Ltd Factory at Kustia on 22 December 2020 and 28 January 2021 to inspect partial discharge, high voltage withstand, insulation, DC resistance etc. of 11KV 300 & 500 RM cable.</p>
+    <h4>Important Clients</h4>
+    <ul class="list clients-list">
+      <li>Inspectorate of Electronics & Instruments (IE&I), Dhaka</li>
+      <li>Sena Kalyan Electronics</li>
+      <li>Sena Kalyan Electric Industries Ltd.</li>
+      <li>Military Engineering Services (MES)</li>
+      <li>24 Engineer Construction Brigade</li>
+      <li>Jolshiri Abason Project</li>
+      <li>Health Engineering Department (HED)</li>
+      <li>Public Works Department</li>
+      <li>Energypac Engineering Ltd.</li>
+      <li>Reverie Power & Automation Engineering Ltd.</li>
+      <li>Adex Engineering Ltd.</li>
+      <li>Petelco</li>
+      <li>Akota Power Ltd.</li>
+      <li>Techno Venture Ltd.</li>
+      <li>Electromech Automation & Engineering Ltd.</li>
+      <li>Integrated Electric Co. Pvt. Ltd.</li>
+      <li>Powermann Bangladesh Ltd.</li>
+      <li>POWERtrac Bangladesh</li>
+      <li>Satco Electric Industries Ltd.</li>
+      <li>Prime Power International</li>
+      <li>Digital Power Associates Ltd.</li>
+      <li>Saif Powertec Ltd</li>
+      <li>Regent Electric</li>
+      <li>Electro Power Engineering Ltd.</li>
+      <li>Bangladesh Rural Electrification Board (BREB)</li>
+      <li>Border Guard Bangladesh (BGB)</li>
+      <li>BRB Cables</li>
+      <li>BBS Cables</li>
+      <li>Poly Cables</li>
+      <li>Supersign Cables</li>
+      <li>SQ Cables</li>
+      <li>Citizen Cables</li>
+      <li>Bizli Cables</li>
+      <li>Elco Cables</li>
+      <li>RK Cables</li>
+      <li>Bengal Solar</li>
+      <li>Super Star Renewable Energy Limited</li>
+      <li>Cotton Club (bd) Ltd</li>
+      <li>Al-Muslim Group</li>
+      <li>AKH Garment etc.</li>
+    </ul>
+
+    
+  </div>
+</section>
+
+
+
+<section class="section" id="featured-projects">
+  <div class="container">
+    <h3>Featured Landmark Projects</h3>
+    <div class="grid">
+      <article class="card">
+        <img src="{% static 'image/Project/BRB Cable.jpg' %}" alt="BRB Cable Industries Ltd project" loading="lazy" decoding="async" />
+        <div class="card-body"><strong>BRB Cable Industries Ltd</strong> — Inspection of partial discharge, high voltage withstand, insulation, DC resistance for 11KV 300 & 500 RM cables.</div>
+      </article>
+      <article class="card">
+        <img src="{% static 'image/Project/Basic Power Engineering Ltd.jpg' %}" alt="Basic Power Engineering Ltd project" loading="lazy" decoding="async" />
+        <div class="card-body"><strong>Basic Power Engineering Ltd</strong> — Transformer tests and performance assessments (50 KVA to 5 MVA).</div>
+      </article>
+      <article class="card">
+        <img src="{% static 'image/Project/Adex engineering Ltd.jpg' %}" alt="Basic Power Engineering Ltd project" loading="lazy" decoding="async" />
+        <div class="card-body"><strong>Adex engineering Ltd</strong> — EECE team carrying out a performance assessment on a 1000 kVA CRT  transformer at factory site.</div>
+      </article>
+      <article class="card">
+        <img src="{% static 'image/Project/Electro-Mech Engineering Ltd.jpg' %}" alt="Basic Power Engineering Ltd project" loading="lazy" decoding="async" />
+        <div class="card-body"><strong>Electro-Mech Engineering Ltd</strong> — Testing a 2500 kVA transformer.</div>
+      </article>
+      <article class="card">
+        <img src="{% static 'image/Project/Energypac engineering Ltd.jpg' %}" alt="Basic Power Engineering Ltd project" loading="lazy" decoding="async" />
+        <div class="card-body"><strong>Energypac engineering Ltd</strong> — Assessing a 1000 KVA CRT transformer in presence of JAICA consultant.</div>
+      </article>
+      <article class="card">
+        <img src="{% static 'image/Project/Performance assessment of 1500 kVA_Adex eng.jpg' %}" alt="Basic Power Engineering Ltd project" loading="lazy" decoding="async" />
+        <div class="card-body"><strong>Adex engineering Ltd</strong> — Performance assessment of 1500 kVA generator at MIST high voltage lab.</div>
+      </article>
+    </div>
+    <div class="center" style="margin-top:16px">
+      <a class="btn" href="#top">Back to top</a>
+    </div>
+  </div>
+</section>
+
+<a href="#top" class="back-to-top" aria-label="Back to top" title="Back to top">↑</a>
+
+{% endblock %}

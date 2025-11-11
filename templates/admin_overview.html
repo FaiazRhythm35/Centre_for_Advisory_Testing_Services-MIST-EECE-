@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+{% block content %}
+<main class="dashboard-layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand">CATS–MIST (CE)</div>
+    <nav class="sidebar-nav">
+      <a href="{% url 'home' %}" class="item">Homepage</a>
+      <a href="{% url 'dashboard' %}" class="item">Dashboard</a>
+      <a href="{% url 'dashboard_lab_tests' %}" class="item">Lab Tests</a>
+      <a href="{% url 'dashboard_consultancy' %}" class="item">Consultancy</a>
+      <div class="item muted">Admin Profile<br>Client ID: {{ profile.client_id|default:"—" }}</div>
+      <a href="{% url 'dashboard_help' %}" class="item">Get Help</a>
+      <div class="sidebar-contact">Contact Webmaster<br><span class="small">+88 01300737109</span></div>
+    </nav>
+  </aside>
+
+  <section class="main">
+    <header class="main-top">
+      <h2>Admin Overview</h2>
+      <div class="top-actions">
+        <div class="user-pill">
+          <span class="dot" aria-hidden="true"></span>
+          {{ profile.full_name|default:request.user.username }}
+        </div>
+        <a class="btn btn-outline" href="{% url 'logout' %}?next={% url 'login' %}">Logout</a>
+      </div>
+    </header>
+
+    <div class="cards">
+      <article class="card">
+        <h3>Your Lab Test and Consultancy Project</h3>
+        <div class="card-body">
+          {% if recent_lab or recent_consultancy %}
+          <div class="grid-2">
+            <div>
+              <div class="label">Lab Tests</div>
+              <ul class="list">
+                {% for r in recent_lab %}
+                  <li>
+                    <div><strong>{{ r.project_name }}</strong></div>
+                    <div class="small">{{ r.get_status_display }} • {{ r.created_at|date:"d/m/Y H:i" }}</div>
+                    <a href="{% url 'dashboard_lab_test_detail' r.id %}" class="btn btn-outline" style="padding:4px 8px">View</a>
+                  </li>
+                {% empty %}
+                  <div class="muted">No recent lab tests.</div>
+                {% endfor %}
+              </ul>
+            </div>
+            <div>
+              <div class="label">Consultancy</div>
+              <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
+                    {% for c in recent_consultancy %}
+                    <li style="margin-bottom: 10px;">
+                        <div><strong>{{ c.project_name }}</strong></div>
+                        <div class="small">{{ c.get_status_display }} • {{ c.created_at|date:"d/m/Y H:i" }}</div>
+                        <a href="{% url 'dashboard_consultancy_detail' c.id %}" class="btn btn-outline" style="padding:4px 8px">View</a>
+                        {% if request.user.is_staff or request.user.is_superuser %}
+                        <form method="post" action="{% url 'dashboard_consultancy_update_status' c.id %}" style="display:flex; gap:8px; align-items:center; margin-top:6px;">
+                            {% csrf_token %}
+                            <select name="status" onchange="(function(sel){const inp=sel.closest('form').querySelector('.verif-code'); if(!inp) return; inp.style.display = sel.value==='report-delivered' ? 'inline-block' : 'none';})(this)" style="padding:4px 6px; border:1px solid #cbd5e1; border-radius:4px;">
+                                {% for val,label in status_choices_cons %}
+                                    <option value="{{ val }}" {% if c.status == val %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                            <input type="text" name="verification_code" class="verif-code" placeholder="8-digit code" pattern="[0-9]{8}" inputmode="numeric" maxlength="8"
+                                   style="{% if c.status == 'report-delivered' %}display:inline-block{% else %}display:none{% endif %}; padding:4px 6px; border:1px solid #cbd5e1; border-radius:4px;"
+                                   value="{{ c.report_verification_code }}">
+                            <input type="hidden" name="next" value="{% url 'admin_overview' %}">
+                            <button type="submit" class="btn btn-outline" style="padding:4px 8px">Update</button>
+                        </form>
+                        {% endif %}
+                    </li>
+                    {% empty %}
+                    <li class="muted">No consultancy requests yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+          </div>
+          {% else %}
+          <div class="empty-icon" aria-hidden="true">⚙️</div>
+          <div>No data found</div>
+          {% endif %}
+        </div>
+      </article>
+      <article class="card small">
+        <div class="card-body">
+          <div class="label">Completed</div>
+          <div class="big">{{ completed_count|default:0 }}</div>
+        </div>
+      </article>
+    </div>
+  </section>
+</main>
+{% endblock %}

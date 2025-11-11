@@ -1,0 +1,182 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CATS – MIST</title>
+  <link rel="stylesheet" href="{% static 'css/common.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  <header class="site-header" id="top">
+    <div class="container nav-grid">
+      <div class="brand">
+        <a href="{% url 'home' %}" class="brand-link" aria-label="Go to Homepage">
+          <img src="{% static 'image/MIST Logo_0.png' %}" alt="CATS–MIST (EECE) logo" />
+          <div class="brand-text">
+            <div class="brand-title">CATS–MIST (EECE)</div>
+            <div class="brand-sub">Centre for Advisory &amp; Testing Services<br>Department of Electrical, Electronic and Communication Engineering, MIST</div>
+          </div>
+        </a>
+      </div>
+      <!-- Mobile menu toggle -->
+      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+      <nav class="nav">
+        <a href="{% url 'home' %}" class="nav-link {% if active_page == 'home' %}active{% endif %}">Homepage</a>
+        <a href="{% url 'test_rates' %}" class="nav-link {% if active_page == 'tests' %}active{% endif %}">Test Rates</a>
+        <a href="{% url 'projects' %}" class="nav-link {% if active_page == 'projects' %}active{% endif %}">Projects</a>
+        <a href="{% url 'experts' %}" class="nav-link {% if active_page == 'experts' %}active{% endif %}">Experts</a>
+        <a href="{% url 'administration' %}" class="nav-link {% if active_page == 'administration' %}active{% endif %}">Administration</a>
+        <div class="nav-item nav-contact">
+          <a href="#contact" class="nav-link">Contact</a>
+          <div class="contact-popup" aria-label="Contact information">
+            <ul class="contact-list">
+              <li class="contact-item">
+                <span class="contact-label">Consultancy Project</span>
+                <div>Secretary: Lt Col Md Tawfiq Amin, PhD, EME</div>
+                <a href="tel:+8801769009256">+880 1769 009256</a> (Secretary)
+              </li>
+              <li class="contact-item">
+                <span class="contact-label">Email</span>
+                <a href="mailto:tawfiqamin@eece.mist.ac.bd">tawfiqamin@eece.mist.ac.bd</a><br>
+                <a href="mailto:cats@eece.mist.ac.bd">cats.eece.mist@gmail.com</a>
+              </li>
+              <li class="contact-item">
+                <span class="contact-label">Reception</span>
+                <a href="tel:+8801111111111">+880 01769023943</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <a href="{% url 'faq' %}" class="nav-link {% if active_page == 'faq' %}active{% endif %}">FAQ</a>
+        <a href="{% url 'dashboard_lab_tests' %}#request" class="nav-cta">Request Test</a>
+        <a href="{% url 'dashboard' %}" class="nav-link {% if active_page == 'dashboard' %}active{% endif %}">DASHBOARD</a>
+      </nav>
+    </div>
+    <!-- Overlay for mobile menu -->
+    <div class="nav-overlay" hidden></div>
+  </header>
+
+  <main>
+    {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+          <div class="alert {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer" id="contact">
+    <div class="container footer-grid">
+      <!-- Column 1: Brand + Contact -->
+      <div>
+        <div class="footer-brand">
+          <img src="{% static 'image/MIST Logo_0.png' %}" alt="CATS–MIST (EECE) logo" />
+          <div class="brand-lines">
+            <div class="name">CATS–MIST (EECE)</div>
+            <div class="org">Military Institute of Science & Technology</div>
+          </div>
+        </div>
+        <h4 class="footer-title"><span class="icon orange">🟠</span> Contact</h4>
+        <ul class="contact-list">
+          <li class="contact-item">
+            <span class="contact-label">Consultancy Project</span>
+            <div>Secretary: Lt Col Md Tawfiq Amin, PhD, EME</div>
+            <a href="tel:+8801792023904">+880 1769009256</a> (Secretary)<br>
+          </li>
+          <li class="contact-item">
+            <span class="contact-label">Email</span>
+            <a href="mailto:drikas@ce.mist.ac.bd">tawfiqamin@eece.mist.ac.bd</a><br>
+            <a href="mailto:cats@ce.mist.ac.bd">cats.eece.mist@gmail.com</a>
+          </li>
+          <li class="contact-item">
+            <span class="contact-label">Reception</span>
+            <a href="tel:+8801790023906">+880 01769023943</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Column 2: Address -->
+      <div>
+        <h4 class="footer-title"><span class="icon purple">🟣</span> Address</h4>
+        <p>
+          CATS–MIST (EECE)<br>
+          2nd Floor, Faculty of Electrical and Computer Engineering<br>
+          Tower (Tower–3), MIST, Mirpur<br>
+          Cantonment<br>
+          Dhaka–1216, Bangladesh
+        </p>
+      </div>
+
+      <!-- Column 3: Report Collection Time -->
+      <div>
+        <h4 class="footer-title"><span class="icon blue">🔵</span> Report Collection Time</h4>
+        <p>
+          Sunday–Thursday<br>
+          8.00 AM–2.30 PM<br>
+          Except Govt and Weekly Holidays
+        </p>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2025, All rights reserved by CATS–MIST (EECE). <a href="#top" class="footer-back-to-top">Back to top</a></div>
+  </footer>
+
+  <script>
+  // Homepage: toggle solid header when scrolled
+  (function(){
+    const isHome = document.body.classList.contains('page-home');
+    if(!isHome) return;
+    function update(){
+      const scrolled = window.scrollY > 24;
+      document.body.classList.toggle('scrolled', scrolled);
+    }
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+  })();
+  </script>
+  <script>
+  // Mobile navigation toggle
+  (function(){
+    const nav = document.querySelector('.site-header .nav');
+    const toggle = document.querySelector('.site-header .nav-toggle');
+    const overlay = document.querySelector('.site-header .nav-overlay');
+    if(!nav || !toggle || !overlay) return;
+    function open(){
+      nav.classList.add('is-open');
+      overlay.classList.add('open');
+      overlay.removeAttribute('hidden');
+      toggle.setAttribute('aria-expanded','true');
+      document.body.style.overflow = 'hidden';
+    }
+    function close(){
+      nav.classList.remove('is-open');
+      overlay.classList.remove('open');
+      overlay.setAttribute('hidden','');
+      toggle.setAttribute('aria-expanded','false');
+      document.body.style.overflow = '';
+    }
+    toggle.addEventListener('click', () => {
+      if(nav.classList.contains('is-open')){ close(); } else { open(); }
+    });
+    overlay.addEventListener('click', close);
+    // Close menu upon navigation link click (prevents overlay blocking subsequent actions)
+    nav.addEventListener('click', (e) => {
+      const target = e.target;
+      if(target && (target.classList.contains('nav-link') || target.classList.contains('nav-cta'))){
+        close();
+      }
+    }, true);
+    // Ensure clean state on page show (back/forward cache)
+    window.addEventListener('pageshow', close);
+    window.addEventListener('keydown', (e) => { if(e.key === 'Escape') close(); });
+  })();
+  </script>
+</body>
+</html>

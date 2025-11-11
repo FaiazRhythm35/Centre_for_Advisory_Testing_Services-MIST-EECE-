@@ -1,0 +1,94 @@
+/* Homepage scoped styles for common components */
+
+/* Sections and layout */
+.page-home .section{padding:24px 0}
+.page-home .section.two-col .cols{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+@media (max-width:900px){.page-home .section.two-col .cols{grid-template-columns:1fr}}
+
+/* Buttons */
+.page-home .btn{display:inline-flex;align-items:center;gap:8px;background:#0a1f57;color:#fff;padding:10px 14px;border:none;border-radius:10px;text-decoration:none}
+.page-home .btn:hover{background:#0c2a7a}
+.page-home .btn-outline{border:1px solid #d1d7e6;color:#0a1f57;background:#fff;padding:8px 12px;border-radius:10px;text-decoration:none;display:inline-block}
+.page-home .btn-outline:hover{background:#f0f4ff}
+
+/* Report verification form */
+.page-home .verify-form{display:flex;gap:8px}
+.page-home .verify-form input{flex:1;padding:10px 12px;border:1px solid #d5dae1;border-radius:8px;font-size:14px}
+.page-home .verify-form .btn{padding:10px 14px}
+
+/* Stats cards */
+.page-home .section.stats .stat-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:stretch}
+.page-home .section.stats .stat{background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 6px 18px rgba(20,24,38,.08);padding:16px;text-align:center;color:#334155}
+.page-home .section.stats .stat .big{font-size:28px;font-weight:800;color:#0a1f57}
+
+/* Projects cards */
+.page-home .section .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.page-home .section .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 22px rgba(20,24,38,.08);overflow:hidden}
+.page-home .section .card img{width:100%;height:260px;object-fit:cover;object-position:center;display:block}
+@media (max-width: 900px){.page-home .section .card img{height:200px}}
+
+/* Per-image zoom-out tweak */
+.page-home .section .card img.zoomout{object-fit:contain;object-position:center}
+.page-home .section .card .card-body{padding:12px 14px;color:#334155}
+@media (max-width:900px){.page-home .section .cards{grid-template-columns:1fr}}
+
+/* Payment banner */
+.page-home .section.payment .payment-banner{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px;box-shadow:0 8px 22px rgba(20,24,38,.08)}
+.page-home .section.payment .payment-icons{display:flex;flex-wrap:wrap;gap:8px}
+.page-home .section.payment .tag{background:#e5eefb;color:#1e3a8a;border:1px solid #cfe0ff;padding:6px 10px;border-radius:999px;font-weight:600}
+
+/* Gallery */
+.page-home .section .gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.page-home .section .gallery img{width:100%;height:160px;object-fit:cover;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+@media (max-width:1024px){.page-home .section .gallery{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:600px){.page-home .section .gallery{grid-template-columns:1fr}}
+
+/* Back to top */
+.page-home .back-to-top{position:fixed;right:24px;bottom:24px;z-index:1000;width:36px;height:36px;display:grid;place-items:center;border-radius:50%;background:#0ea5e9;color:#fff;text-decoration:none;box-shadow:0 6px 18px rgba(0,0,0,.15);pointer-events:auto}
+.page-home .back-to-top:hover{background:#0284c7}
+
+/* Equipment section grid and card overrides */
+.page-home #equipment .equipment-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+@media (min-width: 1200px) {
+  .page-home #equipment .equipment-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 900px) {
+  .page-home #equipment .equipment-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Removed empty ruleset for .page-home #equipment .card to satisfy linter */
+
+.page-home #equipment .card img {
+  height: 180px;
+  object-fit: contain;
+  object-position: center;
+  background: #f8fafc; /* subtle backdrop for letterboxing */
+}
+
+.page-home #equipment .card .card-body h4 {
+  margin: 0 0 6px 0;
+  font-size: 16px;
+  color: #0a1f57;
+}
+.page-home #equipment .card .card-body h4 .small {
+  font-weight: 500;
+  color: #4b5563;
+  font-size: 13px;
+  margin-left: 6px;
+}
+.page-home #equipment .card .card-body p {
+  margin: 0;
+}
+
+/* Justified text for homepage content sections */
+.page-home .section p{ text-align: justify; }
+.page-home .section .sub{ text-align: justify; }
+.page-home .section .card-body{ text-align: justify; }

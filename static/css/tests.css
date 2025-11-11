@@ -1,0 +1,61 @@
+/* Tests page scoped styles to avoid cross-page overlap */
+:root{ --primary:#0b5ed7; --bg:#f7f9fc; --text:#0f172a; --muted:#64748b; --border:#e5e7eb; --brand:#0a1f57; --accent-yellow:#facc15; --accent-sky:#0ea5e9; }
+
+/* Tests page uses the global header styles (common.css) */
+
+/* Page header */
+.page-tests .page-header{border-bottom:1px solid var(--border);background:linear-gradient(180deg,#fff,#f8fbff);border-top:4px solid var(--accent-yellow)}
+.page-tests .page-header__grid{display:flex;align-items:center;justify-content:space-between;padding:20px 0}
+.page-tests .page-header h1{margin:0;font-size:28px;color:var(--brand)}
+.page-tests .page-header .sub{margin-top:6px;color:var(--muted)}
+.page-tests .page-header__actions .btn{background:var(--primary);color:#fff;padding:10px 14px;border:none;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.page-tests .page-header__actions .btn:hover{filter:brightness(.95)}
+.page-tests .page-header__actions .btn .icon{font-size:16px}
+
+.page-tests .section{padding:18px 0}
+
+/* Tabs */
+.page-tests .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;position:sticky;top:56px;background:#fff;padding:8px 0;border-bottom:1px solid var(--border);z-index:80}
+.page-tests .tab{background:#e5eefb;color:#1e3a8a;border:1px solid #cfe0ff;padding:8px 12px;border-radius:999px;cursor:pointer;box-shadow:0 2px 8px rgba(20,24,38,.06)}
+.page-tests .tab.active{background:linear-gradient(90deg,var(--accent-sky),var(--brand));color:#fff;border-color:transparent}
+.page-tests .tab:focus-visible{outline:2px solid var(--accent-yellow);outline-offset:2px}
+
+/* Filters */
+.page-tests .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.page-tests .chip{background:#fff;border:1px solid var(--border);color:#0f172a;padding:8px 12px;border-radius:999px;cursor:pointer;box-shadow:0 2px 8px rgba(20,24,38,.06)}
+.page-tests .chip:hover{background:#f8fafc}
+.page-tests .chip.active{background:#0ea5e9;color:#fff;border-color:#0ea5e9}
+.page-tests .chip:focus-visible{outline:2px solid var(--accent-yellow);outline-offset:2px}
+
+/* Search */
+.page-tests .searchbar{margin:12px 0;position:relative}
+.page-tests .searchbar::before{content:'🔍';position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:14px;color:#64748b;pointer-events:none}
+.page-tests .searchbar input{width:100%;padding:10px 12px 10px 30px;border:1px solid var(--border);border-radius:10px}
+.page-tests .searchbar input:focus{outline:2px solid var(--accent-yellow);outline-offset:2px}
+
+/* Cards */
+.page-tests .cards{display:flex;flex-direction:column;gap:10px}
+.page-tests .card{background:#fff;border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:space-between;padding:16px;box-shadow:0 8px 22px rgba(20,24,38,.06);transition:transform .15s ease,box-shadow .15s ease}
+.page-tests .card:hover{transform:translateY(-2px);box-shadow:0 16px 28px rgba(20,24,38,.12)}
+.page-tests .card-body{max-width:75%}
+.page-tests .test-meta{font-size:12px;color:var(--muted);margin-bottom:6px}
+.page-tests .test-title{margin:0 0 6px 0;font-size:16px;color:var(--brand)}
+.page-tests .test-note{color:#475569;font-size:13px}
+.page-tests .test-side{display:flex;align-items:center;gap:12px}
+.page-tests .price{font-weight:700;color:#0b3b71}
+.page-tests .btn{background:linear-gradient(90deg,var(--accent-sky),var(--brand));color:#fff;border:none;padding:8px 12px;border-radius:10px;cursor:pointer}
+.page-tests .btn.btn-sm{padding:6px 10px}
+.page-tests .btn:hover{filter:brightness(.95)}
+
+/* Responsive */
+@media (max-width:700px){
+  .page-tests .card{flex-direction:column;align-items:flex-start;gap:12px}
+  .page-tests .card-body{max-width:100%}
+  .page-tests .page-header__grid{flex-direction:column;align-items:flex-start;gap:8px}
+  .page-tests .tabs{top:48px}
+}
+
+/* Back to top */
+.page-tests .back-to-top{position:fixed;right:24px;bottom:24px;z-index:1000;width:36px;height:36px;display:grid;place-items:center;border-radius:50%;background:var(--accent-sky);color:#fff;text-decoration:none;box-shadow:0 6px 18px rgba(0,0,0,.15)}
+.page-tests .back-to-top:hover{background:#0284c7}
+.page-tests .back-to-top:focus-visible{outline:2px solid var(--accent-yellow);outline-offset:2px}

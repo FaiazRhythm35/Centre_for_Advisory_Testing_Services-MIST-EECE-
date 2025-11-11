@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+{% block content %}
+<main class="page-auth">
+  <section class="auth-hero" style="background-image:url('/static/image/homepage/cover_2.jpg');"></section>
+  <div class="auth-card auth-card--signup">
+    <h2 class="auth-title">Sign up</h2>
+    <p class="sub">Your account will allow you to request lab test/consultancy.<br>
+      Already have an account? <a href="{% url 'login' %}" class="link">Log in</a>
+    </p>
+
+    <form method="post" class="auth-form" action="{% url 'signup' %}">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <label for="full_name">Your Full Name</label>
+      <input type="text" id="full_name" name="full_name" placeholder="Your full name">
+
+      <div class="radio-switch" role="radiogroup" aria-label="Account type">
+        <label><input type="radio" name="account_type" value="organization" checked> Organization</label>
+        <label><input type="radio" name="account_type" value="self"> Self</label>
+      </div>
+
+      <div class="org-fields">
+        <label for="org_name">Name of your Organization</label>
+        <input type="text" id="org_name" name="org_name" placeholder="Organization name" required>
+
+        <label for="role_in_org">Your Role in the Organization</label>
+        <select id="role_in_org" name="role_in_org" required>
+          <option value="">Select role</option>
+          <option>Engineer</option>
+          <option>Manager</option>
+          <option>Student/Researcher</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" name="phone" placeholder="+88">
+        </div>
+        <div>
+          <label for="email">Email</label>
+          <!-- Map to username for local auth -->
+          <input type="text" id="email" name="username" placeholder="Email" value="{{ form.username.value|default:'' }}" autocomplete="email">
+          {% if form.username.errors %}
+            <div class="field-error">{{ form.username.errors|striptags }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <label for="address">Present Address</label>
+      <textarea id="address" name="address" rows="3" placeholder="Your present address"></textarea>
+
+      <div class="form-row">
+        <div>
+          <label for="id_password1">Password</label>
+          <div class="input-with-toggle">
+            <input type="password" id="id_password1" name="password1" placeholder="Password" autocomplete="new-password">
+            <button type="button" class="toggle-pass" data-target="id_password1">Show</button>
+          </div>
+          {% if form.password1.errors %}
+            <div class="field-error">{{ form.password1.errors|striptags }}</div>
+          {% endif %}
+        </div>
+        <div>
+          <label for="id_password2">Confirm Password</label>
+          <div class="input-with-toggle">
+            <input type="password" id="id_password2" name="password2" placeholder="Confirm Password" autocomplete="new-password">
+            <button type="button" class="toggle-pass" data-target="id_password2">Show</button>
+          </div>
+          {% if form.password2.errors %}
+            <div class="field-error">{{ form.password2.errors|striptags }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="password-note">
+        The password has to be at least eight characters long and must contain a uppercase (A–Z), a lowercase (a–z) and a number (0–9).
+      </div>
+
+      <div class="captcha-box" aria-label="Human verification">
+        <label class="captcha-label">
+          <input type="checkbox" id="captcha_signup" name="captcha" required>
+          <span class="text">I'm not a robot</span>
+        </label>
+        <div class="badge">reCAPTCHA</div>
+      </div>
+
+      <div class="auth-actions">
+        <button type="submit" class="btn btn-primary" data-requires-captcha>Sign up</button>
+      </div>
+
+      <div class="auth-sub auth-sub-center">
+        <a class="btn btn-link" href="{% url 'home' %}">Back to home / Homepage</a>
+      </div>
+    </form>
+  </div>
+</main>
+<script src="{% static 'js/auth.js' %}"></script>
+{% endblock %}

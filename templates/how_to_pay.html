@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}How to Pay – Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="dashboard-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">CATS–MIST (EECE)</div>
+    <nav class="sidebar-nav">
+      <a href="{% url 'home' %}" class="item">Homepage</a>
+      <a href="{% url 'dashboard' %}" class="item">Dashboard</a>
+      <a href="{% url 'dashboard_lab_tests' %}" class="item">Lab Tests</a>
+      <a href="{% url 'dashboard_consultancy' %}" class="item">Consultancy</a>
+      <a href="{% url 'dashboard_profile' %}" class="item">User Profile</a>
+      <a href="{% url 'dashboard_how_to_pay' %}" class="item active">How to Pay</a>
+      <a href="{% url 'dashboard_help' %}" class="item">Get Help</a>
+      <div class="sidebar-contact">Contact Webmaster<br><span class="small">+88 01300737109</span></div>
+    </nav>
+  </aside>
+
+  <!-- Main content -->
+  <section class="main">
+    <header class="main-top">
+      <h2>How to Pay</h2>
+      <div class="top-actions">
+        <div class="user-pill">
+          <span class="dot" aria-hidden="true"></span>
+          {{ profile.full_name|default:request.user.username }}
+        </div>
+        <a class="btn btn-outline" href="{% url 'logout' %}?next={% url 'login' %}">Logout</a>
+      </div>
+    </header>
+
+    <!-- Single white content container with static instructions -->
+    <article class="card">
+      <h3>How to pay using bank:</h3>
+      <div class="card-body">
+        <ul>
+          <li><strong>Account Name:</strong> CATS-MIST</li>
+          <li><strong>Account Number:</strong> 0028-0320000724</li>
+          <li><strong>Name of Bank:</strong> Trust Bank Ltd</li>
+          <li><strong>Name of Branch:</strong> Mirpur Branch</li>
+        </ul>
+
+        <h4>Note:</h4>
+        <ul>
+          <li>After Bank Payment, go to your <strong>DASHBOARD</strong></li>
+          <li>In the <strong>"Lab Tests"</strong> Section you will find a upload receipt section.</li>
+          <li>Upload your receipt and wait for the <strong>approval</strong> confiramtion in the <strong>Status</strong> section</li>
+        </ul>
+
+        <!-- <h4>How to pay online:</h4>
+        <ul>
+          <li>Click on Request a Lab test</li>
+          <li>Select lab, material and the test, and click on SUBMIT</li>
+          <li>In the next page, click on Pay Online</li>
+          <li>Click on confirm payment and accept the terms &amp; conditions</li>
+          <li>In the next page you will be redirected to the SSLCommerz site where you can pay with cards, mobile banking and net banking.</li>
+          <li>Accepted Cards - VISA, Mastercard, Amex, DBBL Nexus</li>
+          <li>Accepted Mobile Banking - bKash, Rocket, Nogod, MyCash, AB Wallet, Tap, Ok Wallet, Dmoney</li>
+          <li>Net Banking - AB bank, Islami Bank, City Touch, MTB, Bank Asia, Tap N Pay, iPay</li>
+          <li>After successful payment, you will be redirected to the CATS MIST CE website and you can download the invoice from there.</li>
+        </ul> -->
+      </div>
+    </article>
+
+    <!-- <footer class="page-note">© 2025, All rights reserved by CATS–MIST (CE).</footer> -->
+  </section>
+</main>
+{% endblock %}

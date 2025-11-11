@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+{% block body_class %}page-administration{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/administration.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="page-administration">
+  <header class="admin-header">
+    <div class="container">
+      <h1>Our Administrations</h1>
+      <p>Meet our dedicated team of administrators</p>
+    </div>
+  </header>
+
+  <section class="admin-cards">
+    <div class="container">
+      <!-- Card 1 -->
+      <article class="admin-card">
+        <div class="photo"><img loading="lazy" decoding="async" src="{% static 'image/Administration/Maj Gen Md Nasim Parvez, BSP, ndc, afwc, psc.jpeg' %}" alt="Maj Gen Md Nasim Parvez, BSP, ndc, afwc, psc"></div>
+        <div class="details">
+          <h2 class="name">Maj Gen Md Nasim Parvez, BSP, ndc, afwc, psc</h2>
+          <div class="role">Chairman</div>
+          <div class="bio">
+            <p>
+              The Centre for Advisory and Testing Services (CATS-MIST) stands as a testament to the Military Institute of Science and Technology’s unwavering commitment to excellence in engineering, research, and national development. Since its inception in January 2008, CATS-MIST has played a pivotal role across consultancy, testing, and applied research—delivering innovative, sustainable, and robust solutions to public and private sector clients.
+            </p>
+            <p>
+              Anchored in MIST’s mission to integrate academic knowledge with real-world impact, CATS-MIST provides an exceptional platform for faculty members and future engineers to engage in large-scale national projects. Through collaboration with government bodies, international institutions, and industrial partners, we continue to promote cutting-edge research, strengthen partnerships, and accelerate technology transfer that supports Bangladesh’s socio-economic advancement.
+            </p>
+            <p>
+              We take immense pride in the contributions of our dynamic team and remain confident that CATS-MIST will continue to lead as a center of excellence in consultancy, research, and testing—driven by innovation, integrity, and national purpose.
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Direction Section -->
+      <article class="admin-card">
+        <div class="photo"><img loading="lazy" decoding="async" src="{% static 'image/Administration/Brigadier General K M Mustafizur Rahman, psc.jpeg' %}" alt="Brigadier General K M Mustafizur Rahman, psc"></div>
+        <div class="details">
+          <h2 class="name">Brigadier General K M Mustafizur Rahman, psc</h2>
+          <div class="role">Direction</div>
+          <div class="bio">
+            <p>
+              CATS-MIST (EECE) was established in 2017 by EECE Department with a view to providing consultancy, advisory and testing services to public and private organizations including personal in the areas of electrical, electronic and communication engineering and to conduct collaboration and research activities with national and international academia and industry.
+            </p>
+            <p>
+              With the availability of expert manpower, infrastructure and lab facilities, the outfit is capable to provide consultancy service related to vetting/ evaluation of technical specification, carry out field test, inspection/survey and vetting of design, drawings, test reports etc. in respect of electrical, electronic, and communication equipment as per the national and global standards.
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 2 -->
+      <article class="admin-card">
+        <div class="photo"><img loading="lazy" decoding="async" src="{% static 'image/Administration/Lt Col Md Tawfiq Amin, PhD, EME.jpg' %}" alt="Lt Col Md Tawfiq Amin, PhD, EME"></div>
+        <div class="details">
+          <h2 class="name">Lt Col Md Tawfiq Amin, PhD, EME</h2>
+          <div class="role">Secretary</div>
+          <div class="bio">
+            <p>
+              The Centre for Advisory, Testing and Services (CATS-MIST) under the Department of Electrical, Electronic and Communication Engineering (EECE) was founded in 2017 to extend professional expertise beyond academia. Its mission is to offer high-quality consultancy, advisory, and testing solutions to government, private, and individual clients, while fostering collaborative research and innovation with both national and international institutions and industries.
+            </p>
+            <p>
+              Equipped with state-of-the-art laboratory facilities and a team of skilled professionals, CATS-MIST is dedicated to delivering reliable services in evaluating and verifying technical specifications, conducting field inspections and surveys, and vetting designs, drawings, and test reports. The center ensures that all its operations align with national and international standards, reinforcing MIST’s commitment to technical excellence and industrial advancement.
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <!-- Additional cards can be added here in the same pattern -->
+    </div>
+  </section>
+
+  <a href="#top" class="back-to-top" aria-label="Back to top" title="Back to top">↑</a>
+</main>
+{% endblock %}

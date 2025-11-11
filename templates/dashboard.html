@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+{% block content %}
+<main class="dashboard-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">CATS–MIST (EECE)</div>
+    <nav class="sidebar-nav">
+      <a href="{% url 'home' %}" class="item">Homepage</a>
+      <a href="{% url 'dashboard' %}" class="item active">Dashboard</a>
+      <a href="{% url 'dashboard_lab_tests' %}" class="item">Lab Tests</a>
+      <a href="{% url 'dashboard_consultancy' %}" class="item">Consultancy</a>
+      <a href="{% url 'dashboard_profile' %}" class="item">User Profile</a>
+      <a href="{% url 'dashboard_how_to_pay' %}" class="item">How to Pay</a>
+      <a href="{% url 'dashboard_help' %}" class="item">Get Help</a>
+      <div class="sidebar-contact">Contact Webmaster<br><span class="small">+88 01300737109</span></div>
+    </nav>
+  </aside>
+
+  <!-- Main content -->
+  <section class="main">
+    <header class="main-top">
+      <h2>Welcome Back!</h2>
+      <div class="top-actions">
+        <a class="btn btn-outline" href="{% url 'dashboard_lab_tests' %}#request">+ Request New Test</a>
+        <a class="btn btn-outline" href="{% url 'dashboard_consultancy' %}?view=request">+ Request New Consultancy</a>
+        <div class="user-pill">
+          <span class="dot" aria-hidden="true"></span>
+          {{ profile.full_name|default:request.user.username }}
+        </div>
+        {% if request.user.is_staff or request.user.is_superuser %}
+        <a class="btn btn-outline" href="{% url 'admin:index' %}">Admin Panel</a>
+        <button id="toggleDelivered" class="btn btn-outline" type="button">Delivered Reports</button>
+        {% else %}
+        <a class="btn btn-outline" href="{% url 'admin:index' %}">Admin Login</a>
+        {% endif %}
+        <a class="btn btn-outline" href="{% url 'logout' %}?next={% url 'login' %}">Logout</a>
+      </div>
+    </header>
+
+    <div class="cards">
+      <article class="card">
+        <h3>Your Lab Test and Consultancy Project</h3>
+        <div class="card-body">
+          {% if recent_lab or recent_consultancy %}
+          <div class="grid-2">
+            <div>
+              <div class="label">Lab Tests</div>
+              <ul class="list">
+                {% for r in recent_lab %}
+                  <li>
+                    <div><strong>{{ r.project_name }}</strong></div>
+                    <div class="small">{{ r.get_status_display }} • {{ r.created_at|date:"d/m/Y H:i" }}</div>
+                    <a href="{% url 'dashboard_lab_test_detail' r.id %}" class="btn btn-outline" style="padding:4px 8px">View</a>
+                  </li>
+                {% empty %}
+                  <div class="muted">No recent lab tests.</div>
+                {% endfor %}
+              </ul>
+            </div>
+            <div>
+              <div class="label">Consultancy</div>
+              <ul class="list">
+                {% for c in recent_consultancy %}
+                  <li>
+                    <div><strong>{{ c.project_name }}</strong></div>
+                    <div class="small">{{ c.get_status_display }} • {{ c.created_at|date:"d/m/Y H:i" }}</div>
+                    <a href="{% url 'dashboard_consultancy_detail' c.id %}" class="btn btn-outline" style="padding:4px 8px">View</a>
+                  </li>
+                {% empty %}
+                  <div class="muted">No recent consultancy.</div>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+          {% else %}
+          <div class="empty-icon" aria-hidden="true">⚙️</div>
+          <div>No data found</div>
+          {% endif %}
+        </div>
+      </article>
+      <article class="card small">
+        <div class="card-body">
+          <div class="label">Completed</div>
+          <div class="big">{{ completed_count|default:0 }}</div>
+        </div>
+      </article>
+    </div>
+
+    {% if is_admin %}
+    <article class="card" id="deliveredSection" style="display:none">
+      <h3>Previous Delivered Reports</h3>
+      <div class="card-body">
+        <div class="grid-2">
+          <div>
+            <div class="label">Lab Tests</div>
+            {% if delivered_lab %}
+            <ul class="list">
+              {% for r in delivered_lab %}
+                <li>
+                  <div><strong>{{ r.project_name }}</strong>{% if r.reference_number %} — Ref {{ r.reference_number }}{% endif %}</div>
+                  <div class="small">Delivered • {{ r.created_at|date:"d/m/Y H:i" }}{% if r.report_verification_code %} • Code: {{ r.report_verification_code }}{% endif %}</div>
+                  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
+                    <a class="btn btn-outline" style="padding:4px 8px" href="{% url 'dashboard_lab_test_detail' r.id %}">View</a>
+                    {% if r.payment_receipt %}
+                    <a class="btn btn-outline" style="padding:4px 8px" href="{{ r.payment_receipt.url }}" target="_blank" rel="noopener">Receipt</a>
+                    {% endif %}
+                  </div>
+                </li>
+              {% endfor %}
+            </ul>
+            {% else %}
+            <div class="muted">No delivered lab reports yet.</div>
+            {% endif %}
+          </div>
+          <div>
+            <div class="label">Consultancy</div>
+            {% if delivered_consultancy %}
+            <ul class="list">
+              {% for c in delivered_consultancy %}
+                <li>
+                  <div><strong>{{ c.project_name }}</strong>{% if c.reference_number %} — Ref {{ c.reference_number }}{% endif %}</div>
+                  <div class="small">Delivered • {{ c.created_at|date:"d/m/Y H:i" }}{% if c.report_verification_code %} • Code: {{ c.report_verification_code }}{% endif %}</div>
+                  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
+                    <a class="btn btn-outline" style="padding:4px 8px" href="{% url 'dashboard_consultancy_detail' c.id %}">View</a>
+                    {% if c.payment_receipt %}
+                    <a class="btn btn-outline" style="padding:4px 8px" href="{{ c.payment_receipt.url }}" target="_blank" rel="noopener">Receipt</a>
+                    {% endif %}
+                  </div>
+                </li>
+              {% endfor %}
+            </ul>
+            {% else %}
+            <div class="muted">No delivered consultancy reports yet.</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </article>
+    {% endif %}
+
+    <!-- <footer class="page-note">© 2025, All rights reserved by CATS–MIST (CE).</footer> -->
+  </section>
+</main>
+<script>
+  // Toggle the Delivered Reports section on admin dashboard
+  (function(){
+    var btn = document.getElementById('toggleDelivered');
+    var section = document.getElementById('deliveredSection');
+    if(btn && section){
+      btn.addEventListener('click', function(){
+        var isHidden = section.style.display === 'none' || !section.style.display;
+        section.style.display = isHidden ? 'block' : 'none';
+      });
+    }
+  })();
+</script>
+{% endblock %}

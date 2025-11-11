@@ -1,0 +1,55 @@
+/* Dashboard layout styles inspired by provided screenshot */
+.dashboard-layout, .dashboard-layout *{box-sizing:border-box}
+.dashboard-layout{display:grid;grid-template-columns:260px 1fr;min-height:70vh}
+
+/* Sidebar */
+.dashboard-layout .sidebar{background:linear-gradient(180deg,#0a1f57,#164a98);color:#e6eeff;padding:16px 14px;position:sticky;top:0;min-height:100vh;box-shadow:inset -1px 0 0 rgba(255,255,255,.08)}
+.dashboard-layout .sidebar-brand{font-weight:700;margin:6px 6px 16px;letter-spacing:.3px}
+.dashboard-layout .sidebar-nav .item{display:block;color:#e6eeff;text-decoration:none;padding:10px 12px;border-radius:8px;margin:2px 6px;transition:background-color .2s ease,color .2s ease}
+.dashboard-layout .sidebar-nav .item:hover{background:rgba(255,255,255,.08);color:#fff}
+.dashboard-layout .sidebar-nav .item.active{background:rgba(255,255,255,.14);color:#fff;border-left:3px solid #93c5fd}
+.dashboard-layout .sidebar-nav .item:focus{outline:2px solid #93c5fd;outline-offset:2px}
+.dashboard-layout .sidebar-nav .item.muted{opacity:.9}
+.dashboard-layout .sidebar-contact{margin:14px 6px;padding:10px;border:1px dashed #ffffff55;border-radius:10px;font-size:13px;color:#cfe2ff;background:rgba(255,255,255,.06)}
+.dashboard-layout .sidebar .small{font-size:12px;color:#cfe2ff}
+
+/* Main */
+.dashboard-layout .main{padding:20px}
+.dashboard-layout .main-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.dashboard-layout .main-top h2{margin:0;font-size:20px;color:#334155}
+.dashboard-layout .top-actions{display:flex;align-items:center;gap:10px}
+.dashboard-layout .btn{display:inline-block;padding:8px 12px;border-radius:10px;text-decoration:none}
+.dashboard-layout .btn-outline{border:1px solid #d1d7e6;color:#0a1f57;background:#fff}
+.dashboard-layout .btn-outline:hover{background:#f0f4ff}
+.dashboard-layout .user-pill{display:flex;align-items:center;gap:8px;background:#f1f5f9;border:1px solid #e2e8f0;padding:8px 12px;border-radius:999px;color:#0a1f57}
+.dashboard-layout .user-pill .dot{width:10px;height:10px;border-radius:50%;background:#10b981}
+
+/* Responsive table fixes */
+.dashboard-layout .card .card-body{overflow-x:auto}
+.dashboard-layout .table td form{flex-wrap:wrap}
+.dashboard-layout .table td form input[type="file"]{flex:1 1 220px;min-width:160px}
+.dashboard-layout .table td form .btn{flex:0 0 auto}
+
+/* Cards */
+.dashboard-layout .cards{display:grid;grid-template-columns:1fr 280px;gap:16px;margin-top:16px}
+.dashboard-layout .card{background:#fff;border-radius:12px;box-shadow:0 8px 22px rgba(20,24,38,.08);overflow:hidden}
+.dashboard-layout .card h3{margin:14px 16px;font-size:16px;color:#334155}
+.dashboard-layout .card .card-body{padding:16px;color:#475569}
+.dashboard-layout .card.small .big{font-size:30px;font-weight:800;color:#0a1f57}
+.dashboard-layout .card.small .label{font-size:14px;color:#64748b}
+.dashboard-layout .empty{display:grid;place-items:center;min-height:160px;text-align:center}
+.dashboard-layout .empty-icon{font-size:28px;margin-bottom:8px}
+
+.dashboard-layout .page-note{margin-top:20px;color:#64748b;font-size:12px}
+
+@media (max-width: 860px){
+  .dashboard-layout{grid-template-columns:1fr}
+  /* Stack layout and make sidebar non-sticky for better scrolling */
+  .dashboard-layout .sidebar{padding:12px; position:relative; top:auto; min-height:auto}
+  /* Make header and actions wrap nicely on small screens */
+  .dashboard-layout .main-top{flex-direction:column; align-items:flex-start; gap:8px}
+  .dashboard-layout .top-actions{flex-wrap:wrap}
+  .dashboard-layout .toggle-group{flex-wrap:wrap}
+  .dashboard-layout .btn-toggle{flex:1 1 140px}
+  .dashboard-layout .cards{grid-template-columns:1fr}
+}

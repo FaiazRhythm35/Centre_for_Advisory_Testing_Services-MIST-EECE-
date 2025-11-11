@@ -1,0 +1,329 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}User Profile – Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<style>
+/* Scoped styles for Profile dashboard */
+.dashboard-layout .toggle-group{display:flex;gap:8px}
+.dashboard-layout .btn-toggle{padding:8px 12px;border:1px solid #d5dae1;border-radius:8px;background:#fff;color:#0a1f57;font-weight:600}
+.dashboard-layout .btn-toggle.active{background:#0a1f57;color:#fff;border-color:#0a1f57}
+
+/* Cards */
+.dashboard-layout .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 22px rgba(20,24,38,.08)}
+.dashboard-layout .card h3{margin:0;padding:14px 16px;border-bottom:1px solid #e5e7eb;font-size:16px;color:#0a1f57}
+.dashboard-layout .card-body{padding:16px}
+
+/* Details header */
+.profile-header{background:#0a1f57;color:#fff;border-radius:12px 12px 0 0;padding:16px;display:flex;justify-content:space-between;align-items:center}
+.profile-header .left{display:flex;flex-direction:column}
+.status-badge{background:#10b981;color:#fff;padding:6px 10px;border-radius:999px;font-weight:700;font-size:12px}
+
+/* Details body */
+.details-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:16px}
+.details-grid .label{font-size:12px;color:#64748b}
+.details-grid .value{font-size:14px;color:#111827}
+@media (max-width:900px){.details-grid{grid-template-columns:1fr}}
+
+/* Forms */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-grid .full{grid-column:1 / -1}
+label{font-size:13px;color:#334155;margin-bottom:4px;display:block}
+input[type="text"], input[type="email"], input[type="password"], input[type="date"], select, textarea{width:100%;padding:8px 10px;border:1px solid #d5dae1;border-radius:8px;font-size:14px}
+.small{font-size:12px;color:#6b7280}
+.form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+.btn-primary{background:#0a1f57;color:#fff;border:none}
+.btn-primary:hover{background:#0c2a7a}
+.error{border-color:#ef4444 !important}
+.banner{background:#FEF3C7;border:1px solid #FDE68A;color:#92400E;padding:10px;border-radius:8px;margin-bottom:12px}
+.radio-list{display:flex;gap:18px;align-items:flex-start}
+.radio-list .desc{font-size:12px;color:#6b7280;margin-top:4px}
+
+/* Hide/show */
+.hidden{display:none !important}
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="dashboard-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">CATS–MIST (EECE)</div>
+    <nav class="sidebar-nav">
+      <a href="{% url 'home' %}" class="item">Homepage</a>
+      <a href="{% url 'dashboard' %}" class="item">Dashboard</a>
+      <a href="{% url 'dashboard_lab_tests' %}" class="item">Lab Tests</a>
+      <a href="{% url 'dashboard_consultancy' %}" class="item">Consultancy</a>
+      <a href="{% url 'dashboard_profile' %}" class="item active">User Profile</a>
+      <a href="{% url 'dashboard_how_to_pay' %}" class="item">How to Pay</a>
+      <a href="{% url 'dashboard_help' %}" class="item">Get Help</a>
+      <div class="sidebar-contact">Contact Webmaster<br><span class="small">+88 01300737109</span></div>
+    </nav>
+  </aside>
+
+  <!-- Main content -->
+  <section class="main">
+    <header class="main-top">
+      <h2 id="sectionTitle">User Profile</h2>
+      <div class="top-actions">
+        <div class="toggle-group" role="tablist" aria-label="Profile Views">
+          <button class="btn btn-toggle active" id="btnDetails" role="tab" aria-selected="true">Profile Details</button>
+          <button class="btn btn-toggle" id="btnEdit" role="tab" aria-selected="false">Edit Profile</button>
+          <button class="btn btn-toggle" id="btnPassword" role="tab" aria-selected="false">Change Password</button>
+        </div>
+        <div class="user-pill">
+          <span class="dot" aria-hidden="true"></span>
+          {{ profile.full_name|default:request.user.username }}
+        </div>
+        <a class="btn btn-outline" href="{% url 'logout' %}?next={% url 'login' %}">Logout</a>
+      </div>
+    </header>
+    {% if messages %}
+      <div class="card" style="margin:12px 0;">
+        <div class="card-body">
+          {% for message in messages %}
+            <div class="banner">{{ message }}</div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- State 1: Profile Details -->
+    <article id="viewDetails" class="card">
+      <div class="profile-header">
+        <div class="left">
+          {% if profile.profile_image %}
+            <img src="{{ profile.profile_image.url }}" alt="Profile Image" style="width:48px;height:48px;border-radius:50%;object-fit:cover;margin-bottom:8px;">
+          {% endif %}
+          <div class="name">{{ profile.full_name|default:"Faiaz" }}</div>
+          <div class="small">Client ID: {{ profile.client_id|default:"000667" }}</div>
+        </div>
+        <div class="status-badge">Active</div>
+      </div>
+      <div class="details-grid">
+        <div>
+          <div class="label">Email</div>
+          <div class="value">{{ request.user.email|default:"faiaz@gmail.com" }}</div>
+        </div>
+        <div>
+          <div class="label">Organization</div>
+          <div class="value">{{ profile.org_name|default:"ds" }}</div>
+        </div>
+        <div>
+          <div class="label">Phone</div>
+          <div class="value">{{ profile.phone|default:"01300737109" }}</div>
+        </div>
+        <div>
+          <div class="label">Present Address</div>
+          <div class="value">{{ profile.address|default:"dds, - - -, Bangladesh" }}</div>
+        </div>
+        <div>
+          <div class="label">Role</div>
+          <div class="value">Client</div>
+        </div>
+        <div>
+          <div class="label">Your Role in the Organization</div>
+          <div class="value">{{ profile.role_in_org|default:"Staff" }}</div>
+        </div>
+        <div>
+          <div class="label">City / State</div>
+          <div class="value">{{ profile.city|default:"" }}</div>
+        </div>
+        <div>
+          <div class="label">Country</div>
+          <div class="value">{{ profile.country|default:"" }}</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- State 2: Edit Profile -->
+    <article id="viewEdit" class="card hidden">
+      <h3>Edit Profile</h3>
+      <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="hidden" name="form" value="profile" />
+          <div class="form-grid">
+            <div class="full">
+              <label for="profilePic">Upload Profile Picture (JPG, JPEG, PNG only)</label>
+              <input id="profilePic" name="profile_image" type="file" accept="image/jpeg,image/png" />
+              <div class="small">Max Size: 1MB • Dimension: 1000 x 1000 px</div>
+              {% if profile_form.profile_image.errors %}
+                <div class="small" style="color:#b91c1c">{{ profile_form.profile_image.errors|striptags }}</div>
+              {% endif %}
+            </div>
+            <div class="full">
+              <label for="fullName">Name (Max length: 100 & letter only) *</label>
+              <input id="fullName" name="full_name" type="text" maxlength="100" value="{{ profile.full_name|default:'' }}" required />
+              {% if profile_form.full_name.errors %}
+                <div class="small" style="color:#b91c1c">{{ profile_form.full_name.errors|striptags }}</div>
+              {% endif %}
+            </div>
+            <div class="full">
+              <label>Account Type</label>
+              <div class="radio-list">
+                <div>
+                  <label><input type="radio" name="account_type" value="organization" {% if profile.account_type == 'self' %}{% else %}checked{% endif %}/> Organization</label>
+                  <div class="desc">For companies, offices, or groups.</div>
+                </div>
+                <div>
+                  <label><input type="radio" name="account_type" value="self" {% if profile.account_type == 'self' %}checked{% endif %}/> Self</label>
+                  <div class="desc">For individual clients acting personally.</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <label for="orgName">Name of your Organization *</label>
+              <input id="orgName" name="org_name" type="text" value="{{ profile.org_name|default:'' }}" />
+            </div>
+            <div>
+              <label for="roleInOrg">Your Role in the Organization *</label>
+              <select id="roleInOrg" name="role_in_org">
+                <option value="">Select Role</option>
+                <option {% if profile.role_in_org == 'Staff' %}selected{% endif %}>Staff</option>
+                <option {% if profile.role_in_org == 'Engineer' %}selected{% endif %}>Engineer</option>
+                <option {% if profile.role_in_org == 'Manager' %}selected{% endif %}>Manager</option>
+                <option {% if profile.role_in_org == 'Director' %}selected{% endif %}>Director</option>
+              </select>
+            </div>
+            <div>
+              <label for="phone">Phone Number</label>
+              <input id="phone" name="phone" type="text" value="{{ profile.phone|default:'' }}" />
+            </div>
+            <div>
+              <label for="email">Email *</label>
+              <input id="email" name="email" type="email" value="{{ request.user.email|default:'' }}" required />
+              {% if profile_form.email.errors %}
+                <div class="small" style="color:#b91c1c">{{ profile_form.email.errors|striptags }}</div>
+              {% endif %}
+            </div>
+            <div class="full">
+              <label for="address">Present Address *</label>
+              <input id="address" name="address" type="text" value="{{ profile.address|default:'' }}" required />
+            </div>
+            <div>
+              <label for="city">City / State</label>
+              <input id="city" name="city" type="text" value="{{ profile.city|default:'' }}" />
+            </div>
+            <div>
+              <label for="country">Country</label>
+              <input id="country" name="country" type="text" value="{{ profile.country|default:'Bangladesh' }}" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Update Profile</button>
+          </div>
+        </form>
+      </div>
+    </article>
+
+    <!-- State 3: Change Password -->
+    <article id="viewPassword" class="card hidden">
+      <h3>Update New Password</h3>
+      <div class="card-body">
+        <div class="banner">The password has to be at between 8 to 24 character and must contain a uppercase (A-Z), a lowercase (a-z), a number (0-9).</div>
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="form" value="password" />
+          <div class="form-grid full">
+            <div class="full">
+              <label for="oldPassword">Old Password *</label>
+              <div style="display:flex;gap:8px">
+                <input id="oldPassword" name="old_password" type="password" required />
+                <button class="btn btn-outline" type="button" data-toggle="oldPassword">Show</button>
+              </div>
+            </div>
+            <div class="full">
+              <label for="newPassword">New Password *</label>
+              <div style="display:flex;gap:8px">
+                <input id="newPassword" name="new_password" type="password" required />
+                <button class="btn btn-outline" type="button" data-toggle="newPassword">Show</button>
+              </div>
+            </div>
+            <div class="full">
+              <label for="confirmPassword">Confirm New Password *</label>
+              <div style="display:flex;gap:8px">
+                <input id="confirmPassword" name="confirm_password" type="password" required />
+                <button class="btn btn-outline" type="button" data-toggle="confirmPassword">Show</button>
+              </div>
+            </div>
+          </div>
+          {% if password_form.non_field_errors %}
+            <div class="banner">{{ password_form.non_field_errors|striptags }}</div>
+          {% endif %}
+          <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Update Password</button>
+          </div>
+        </form>
+      </div>
+    </article>
+
+    <script>
+    // Toggle helpers
+    const btnDetails = document.getElementById('btnDetails');
+    const btnEdit = document.getElementById('btnEdit');
+    const btnPassword = document.getElementById('btnPassword');
+    const viewDetails = document.getElementById('viewDetails');
+    const viewEdit = document.getElementById('viewEdit');
+    const viewPassword = document.getElementById('viewPassword');
+
+    function setActive(view){
+      const map = {details:viewDetails, edit:viewEdit, password:viewPassword};
+      Object.keys(map).forEach(function(k){ map[k].classList.add('hidden'); });
+      map[view].classList.remove('hidden');
+      btnDetails.classList.toggle('active', view==='details');
+      btnEdit.classList.toggle('active', view==='edit');
+      btnPassword.classList.toggle('active', view==='password');
+    }
+    btnDetails.addEventListener('click', function(){ setActive('details'); });
+    btnEdit.addEventListener('click', function(){ setActive('edit'); });
+    btnPassword.addEventListener('click', function(){ setActive('password'); });
+    (function(){
+      const initial = new URLSearchParams(window.location.search).get('view');
+      setActive(initial==='edit' ? 'edit' : initial==='password' ? 'password' : 'details');
+    })();
+
+    // Edit Profile validation + submission
+    function isLettersOnly(str){ return /^[A-Za-z\s]+$/.test(str); }
+    function validateImage(file){
+      return new Promise(function(resolve){
+        if(!file){ return resolve({ok:true}); }
+        const validTypes = ['image/jpeg','image/png'];
+        if(validTypes.indexOf(file.type)===-1){ return resolve({ok:false, msg:'Only JPG/JPEG/PNG allowed'}); }
+        const sizeMB = file.size/(1024*1024);
+        if(sizeMB>1){ return resolve({ok:false, msg:'File exceeds 1MB'}); }
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = function(){
+          const ok = img.width===1000 && img.height===1000;
+          URL.revokeObjectURL(url);
+          resolve(ok ? {ok:true} : {ok:false, msg:'Image must be 1000 x 1000 px'});
+        };
+        img.onerror = function(){ URL.revokeObjectURL(url); resolve({ok:false, msg:'Invalid image'}); };
+        img.src = url;
+      });
+    }
+
+    // Form submission handled server-side; client-side validation removed
+
+    // Password show/hide
+    document.querySelectorAll('[data-toggle]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var id = btn.getAttribute('data-toggle');
+        var input = document.getElementById(id);
+        input.type = input.type === 'password' ? 'text' : 'password';
+        btn.textContent = input.type === 'password' ? 'Show' : 'Hide';
+      });
+    });
+
+    // Password validation + submission
+    function meetsPolicy(p){
+      if(p.length<8 || p.length>24) return false;
+      return /[A-Z]/.test(p) && /[a-z]/.test(p) && /[0-9]/.test(p);
+    }
+    // Form submission handled server-side; password validation done in Django form
+    </script>
+  </section>
+</main>
+{% endblock %}

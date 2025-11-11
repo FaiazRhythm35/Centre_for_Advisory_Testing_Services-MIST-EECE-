@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Consultancy Request Details{% endblock %}
+
+{% block content %}
+<header class="main-top">
+  <div class="container">
+    <div class="top-content">
+      <div class="left-title">
+        <h1>Consultancy Request Details</h1>
+        <p class="subtitle">Request #{{ req.id }} • {{ req.created_at|date:'d/m/Y H:i' }}</p>
+      </div>
+      <div class="top-actions">
+        <a href="{% url 'dashboard_consultancy' %}" class="btn btn-secondary">Back to Consultancy</a>
+        {% if request.user.is_staff or request.user.is_superuser %}
+          <a href="{% url 'admin:index' %}" class="btn">Admin Panel</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="dashboard-section">
+  <div class="container">
+    <div class="card">
+      <div class="card-header">Request Information</div>
+      <div class="card-body grid-2">
+        <div>
+          <p><strong>Project Name:</strong> {{ req.project_name }}</p>
+          <p><strong>Organization:</strong> {{ req.organization|default:'—' }}</p>
+          <p><strong>Location:</strong> {{ req.location|default:'—' }}</p>
+          <p><strong>Reference Number:</strong> {{ req.reference_number|default:'—' }}</p>
+          <p><strong>Status:</strong> {{ req.get_status_display }}</p>
+          <p><strong>Amount:</strong> {% if req.amount %}৳ {{ req.amount }}{% else %}—{% endif %}</p>
+        </div>
+        <div>
+          <p><strong>Requested By:</strong> {{ req.user.get_full_name|default:req.user.username }}</p>
+          {% if req.attachment %}
+            <p><strong>Attachment:</strong> <a href="{{ req.attachment.url }}" target="_blank" rel="noopener">View Attachment</a></p>
+          {% else %}
+            <p><strong>Attachment:</strong> —</p>
+          {% endif %}
+          {% if req.payment_receipt %}
+            <p><strong>Payment Receipt:</strong> <a href="{{ req.payment_receipt.url }}" target="_blank" rel="noopener">View Receipt</a></p>
+          {% else %}
+            <p><strong>Payment Receipt:</strong> —</p>
+          {% endif %}
+          <p><strong>Updated:</strong> {{ req.updated_at|date:'d/m/Y H:i' }}</p>
+        </div>
+      </div>
+    </div>
+    {% if request.user.is_staff or request.user.is_superuser %}
+    <div style="margin-top:8px">
+      <form method="post" action="{% url 'dashboard_consultancy_update_status' req.id %}" style="display:flex;gap:6px;align-items:center">
+        {% csrf_token %}
+        <select name="status" onchange="(function(sel){const form=sel.closest('form'); const inp=form.querySelector('.verif-code'); const amt=form.querySelector('.amount-input'); const showCode=sel.value==='report-delivered'; const showAmt=sel.value==='approved'; if(inp){inp.style.display = showCode ? 'inline-block' : 'none'; inp.disabled = !showCode; if(!showCode) inp.value='';} if(amt){amt.style.display = showAmt ? 'inline-block' : 'none'; amt.disabled = !showAmt; if(!showAmt) amt.value='';}})(this)">
+          {% for val,label in status_choices %}
+            <option value="{{ val }}" {% if req.status == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+        <input type="text" name="verification_code" class="verif-code" placeholder="8-digit code" pattern="[0-9]{8}" inputmode="numeric" maxlength="8"
+          style="{% if req.status == 'report-delivered' %}display:inline-block{% else %}display:none{% endif %}; padding:4px 6px; border:1px solid #cbd5e1; border-radius:4px"
+          value="{{ req.report_verification_code|default:'' }}">
+        <input type="text" name="amount" class="amount-input" placeholder="Amount (Tk)"
+          style="{% if req.status == 'approved' %}display:inline-block{% else %}display:none{% endif %}; padding:4px 6px; border:1px solid #cbd5e1; border-radius:4px"
+          value="{{ req.amount|default:'' }}">
+        <input type="hidden" name="next" value="{% url 'dashboard_consultancy_detail' req.id %}" />
+        <button class="btn btn-outline" type="submit" style="padding:4px 8px">Update</button>
+      </form>
+    </div>
+    {% else %}
+      {% if req.amount and not req.payment_receipt %}
+      <div style="margin-top:8px">
+        <form method="post" action="{% url 'dashboard_consultancy_upload_receipt' req.id %}" enctype="multipart/form-data" style="display:flex;gap:6px;align-items:center">
+          {% csrf_token %}
+          <input type="file" name="payment_receipt" accept="application/pdf,image/*"/>
+          <button class="btn btn-outline" type="submit" style="padding:4px 8px">Upload Receipt</button>
+        </form>
+      </div>
+      {% elif req.payment_receipt %}
+      <div class="status-pill" style="margin-top:6px"><span class="dot" aria-hidden="true"></span> Thanks for payment</div>
+      {% endif %}
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body_class %}page-tests{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/tests.css' %}?v=2">
+{% endblock %}
+{% block content %}
+
+<section class="page-header">
+  <div class="container page-header__grid">
+    <div>
+      <h1>Rates for Testing Materials</h1>
+<p class="sub">Browse and search CATS–MIST lab tests and rates.</p>
+    </div>
+    <div class="page-header__actions">
+      <a class="btn" href="#" onclick="window.print();return false;">
+        <span class="icon">⬇</span> Download PDF
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="tabs" id="labTabs">
+      <button class="tab active" data-lab="transformer">Transformer</button>
+      <button class="tab" data-lab="cable">Cable</button>
+      <button class="tab" data-lab="generator">Generator</button>
+      <button class="tab" data-lab="misc">Miscellaneous</button>
+    </div>
+
+    <div id="filters" class="filters"></div>
+
+    <div class="searchbar">
+      <input type="text" id="searchInput" placeholder="Search tests by name" />
+    </div>
+
+    <div id="results" class="cards"></div>
+  </div>
+</section>
+
+<script>
+// Data updated per new categories and test rates
+const DATA = {
+  transformer: {
+    filters: ['All Tests','Performance & Capacity test','Individual/Single Test'],
+    tests: [
+      { category:'Performance & Capacity test', name:'Performance Test (10 KVA up to 250KVA)', price:40000 },
+      { category:'Performance & Capacity test', name:'Performance Test (Above 250KVA to 500KVA)', price:50000 },
+      { category:'Performance & Capacity test', name:'Performance Test (Above 500KVA to 1250KVA)', price:60000 },
+      { category:'Performance & Capacity test', name:'Performance Test (Above 1250KVA to 2000KVA)', price:80000 },
+      { category:'Performance & Capacity test', name:'Performance Test (Above 2000KVA to 3000KVA)', price:100000 },
+      { category:'Performance & Capacity test', name:'Performance Test (Above 3000KVA)', price:150000 },
+      { category:'Individual/Single Test', name:'Winding resistance', price:5000 },
+      { category:'Individual/Single Test', name:'Insulation resistance', price:5000 },
+      { category:'Individual/Single Test', name:'Turn ratio test', price:5000 },
+      { category:'Individual/Single Test', name:'Vector group test', price:5000 },
+      { category:'Individual/Single Test', name:'No load loss & No load current measurement, Full load loss & impedance voltage test (10KVA to 250KVA)', price:30000 },
+      { category:'Individual/Single Test', name:'No load loss & No load current measurement, Full load loss & impedance voltage test (Above 250KVA to 500KVA)', price:40000 },
+      { category:'Individual/Single Test', name:'No load loss & No load current measurement, Full load loss & impedance voltage test (Above 500KVA to 1250KVA)', price:50000 },
+      { category:'Individual/Single Test', name:'No load loss & No load current measurement, Full load loss & impedance voltage test (Above 1250KVA to 2000KVA)', price:60000 },
+      { category:'Individual/Single Test', name:'No load loss & No load current measurement, Full load loss & impedance voltage test (Above 2000KVA to 3000KVA)', price:70000 },
+      { category:'Individual/Single Test', name:'Dielectric test of Transformer Oil', price:4000 },
+      { category:'Individual/Single Test', name:'Dielectric test of Transformer HT & LT With High Voltage', price:10000 },
+      { category:'Individual/Single Test', name:'Temperature rise test (10 KVA up to 250KVA)', price:10000 },
+      { category:'Individual/Single Test', name:'Temperature rise test (Above 250KVA to 500KVA)', price:15000 },
+      { category:'Individual/Single Test', name:'Temperature rise test (Above 500KVA to 1250KVA)', price:20000 },
+      { category:'Individual/Single Test', name:'Temperature rise test (Above 1250KVA to 2000KVA)', price:25000 },
+      { category:'Individual/Single Test', name:'Temperature rise test (Above 2000KVA to 3000KVA)', price:30000 },
+      { category:'Individual/Single Test', name:'Temperature rise test (Above 3000KVA)', price:35000 },
+      { category:'Individual/Single Test', name:'Lighting Impulse Test (Above 250KVA to 1250KVA)', price:20000 },
+      { category:'Individual/Single Test', name:'Lighting Impulse Test (500KVA & 1250KVA)', price:40000 },
+      { category:'Individual/Single Test', name:'Lighting Impulse Test (Above 1250KVA)', price:60000 },
+      { category:'Individual/Single Test', name:'DVDF Test (Above 250KVA to 500KVA)', price:20000 },
+      { category:'Individual/Single Test', name:'DVDF Test (Above 500KVA & Above)', price:30000 }
+    ]
+  },
+  cable: {
+    filters: ['All Tests','All Performance test','Individual/Single Test'],
+    tests: [
+      { category:'All Performance test', name:'Performance Test (UP to 10rm)', price:20000 },
+      { category:'All Performance test', name:'Performance Test (10rm to 25rm)', price:25000 },
+      { category:'All Performance test', name:'Performance Test (25rm to 30rm)', price:30000 },
+      { category:'All Performance test', name:'Performance Test (50rm to 95rm)', price:40000 },
+      { category:'All Performance test', name:'Performance Test (95rm to 240rm)', price:60000 },
+      { category:'All Performance test', name:'Performance Test (240rm to 500rm)', price:80000 },
+      { category:'All Performance test', name:'Performance Test (500rm to 630rm)', price:100000 },
+      { category:'All Performance test', name:'Performance Test (Above 630rm)', price:130000 },
+      { category:'All Performance test', name:'Copper Purity Test', price:15000 },
+      { category:'Individual/Single Test', name:'Dimension test', price:10000 },
+      { category:'Individual/Single Test', name:'Insulation resistance test', price:5000 },
+      { category:'Individual/Single Test', name:'Current Carrying Capacity (up to 4rm)', price:20000 },
+      { category:'Individual/Single Test', name:'Current Carrying Capacity (Above 10rm up to 20rm)', price:40000 },
+      { category:'Individual/Single Test', name:'Current Carrying Capacity (90rm)', price:60000 },
+      { category:'Individual/Single Test', name:'Current Carrying Capacity (180rm & Above)', price:100000 },
+      { category:'Individual/Single Test', name:'Power Frequency high voltage withstand test (LT)', price:10000 },
+      { category:'Individual/Single Test', name:'Power Frequency high voltage withstand test (HT)', price:12000 }
+    ]
+  },
+  generator: {
+    filters: ['All Tests','Load Test & Performance test','Individual/Single Test'],
+    tests: [
+      { category:'Load Test & Performance test', name:'Performance Test (Up to 20KVA)', price:30000 },
+      { category:'Load Test & Performance test', name:'Performance Test (Above 20KVA to 50KVA)', price:40000 },
+      { category:'Load Test & Performance test', name:'Performance Test (Above 50KVA to 80KVA)', price:50000 },
+      { category:'Load Test & Performance test', name:'Performance Test (Above 80KVA to 100KVA)', price:60000 },
+      { category:'Load Test & Performance test', name:'Performance Test (Above 100KVA to 300KVA)', price:80000 },
+      { category:'Load Test & Performance test', name:'Performance Test (Above 300KVA to 500KVA)', price:100000 },
+      { category:'Individual/Single Test', name:'Insulation resistance test', price:5000 },
+      { category:'Individual/Single Test', name:'High voltage withstand test', price:10000 },
+      { category:'Individual/Single Test', name:'Load test', price:40000 },
+      { category:'Individual/Single Test', name:'Fuel Consumption Test', price:20000 },
+      { category:'Individual/Single Test', name:'Tripping & Non-Tripping Test', price:5000 },
+      { category:'Individual/Single Test', name:'Sound Level Test', price:5000 }
+    ]
+  },
+  misc: {
+    filters: ['All Tests','Battery','Fan','Testers','Solar','Insulator','Motor','Busbar','LED'],
+    tests: [
+      { category:'Battery', name:'Capacity Test of Battery (12v-24v & 80AH-200AH)', price:35000 },
+      { category:'Fan', name:'Fan Performance Test', price:30000 },
+      { category:'Testers', name:'Earth tester/Insulation tester/Instrument Performance', price:25000 },
+      { category:'Solar', name:'Solar Panel Test (watt peak & efficiency measurement)', price:20000 },
+      { category:'Solar', name:'Solar Inverter Test (efficiency test) (Up to 10KW)', price:30000 },
+      { category:'Solar', name:'Solar Inverter Test (efficiency test) (Above 10KW)', price:40000 },
+      { category:'Insulator', name:'Insulator test 11kV (Dielectric strength)', price:40000 },
+      { category:'Insulator', name:'Insulator test 33kV (Dielectric strength) (Dry & Wet Condition)', price:50000 },
+      { category:'Motor', name:'Motor Capacity test (1HP-40HP)', price:40000 },
+      { category:'Motor', name:'Motor Capacity test (Above 40HP)', price:60000 },
+      { category:'Busbar', name:'Busbar Trunking BBT (Above 500A to 1200A)', price:50000 },
+      { category:'Busbar', name:'Busbar Trunking BBT (Above 1200A to 2000A)', price:80000 },
+      { category:'Busbar', name:'Busbar Trunking BBT (Above 2000A)', price:80000 },
+      { category:'LED', name:'LED Lamp Test', price:15000 }
+    ]
+  }
+};
+
+// Insert authentication detection and order URL
+const IS_AUTH = {{ request.user.is_authenticated|yesno:"true,false" }};
+const TARGET_ORDER = "{% url 'dashboard_lab_tests' %}?view=request";
+const ORDER_URL = IS_AUTH ? TARGET_ORDER : "{% url 'login' %}?next=" + encodeURIComponent(TARGET_ORDER);
+
+let selectedLab = 'transformer';
+let selectedFilter = 'All Tests';
+let searchQuery = '';
+
+const filtersEl = document.getElementById('filters');
+const resultsEl = document.getElementById('results');
+const searchEl = document.getElementById('searchInput');
+
+function renderFilters(){
+  filtersEl.innerHTML = '';
+  const filters = DATA[selectedLab].filters;
+  filters.forEach(f => {
+    const btn = document.createElement('button');
+    btn.className = 'chip' + (f === selectedFilter ? ' active' : '');
+    btn.textContent = f;
+    btn.dataset.filter = f;
+    btn.onclick = () => { selectedFilter = f; renderResults(); renderFilters(); };
+    filtersEl.appendChild(btn);
+  });
+}
+
+function priceFmt(n){
+  return new Intl.NumberFormat('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}).format(n);
+}
+
+function renderResults(){
+  const items = DATA[selectedLab].tests.filter(t => {
+    const matchesFilter = selectedFilter === 'All Tests' || t.category.toLowerCase().includes(selectedFilter.toLowerCase());
+    const matchesSearch = !searchQuery || (t.name + ' ' + (t.instructions||'')).toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
+  resultsEl.innerHTML = items.map(t => `
+    <article class="card test-card">
+      <div class="card-body">
+        <div class="test-meta">${t.category}</div>
+        <h4 class="test-title">${t.name}</h4>
+        ${t.instructions ? '<div class="test-note">' + t.instructions + '</div>' : ''}
+      </div>
+      <div class="test-side">
+        <div class="price">${priceFmt(t.price)}</div>
+        <a href="${ORDER_URL}" class="btn btn-sm">Order</a>
+      </div>
+    </article>
+  `).join('');
+}
+
+// Tabs
+Array.from(document.querySelectorAll('#labTabs .tab')).forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('#labTabs .tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    selectedLab = tab.dataset.lab;
+    selectedFilter = 'All Tests';
+    renderFilters();
+    renderResults();
+  });
+});
+
+// Search
+searchEl.addEventListener('input', e => { searchQuery = e.target.value.trim(); renderResults(); });
+
+// Initial render
+renderFilters();
+renderResults();
+</script>
+
+<a href="#top" class="back-to-top" aria-label="Back to top" title="Back to top">↑</a>
+
+{% endblock %}

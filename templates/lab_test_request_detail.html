@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Lab Test Request – Detail{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<style>
+.labtest-detail .grid{display:grid;grid-template-columns:1fr 300px;gap:16px}
+@media (max-width:1024px){.labtest-detail .grid{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 22px rgba(20,24,38,.08)}
+.card h3{margin:0;padding:14px 16px;border-bottom:1px solid #e5e7eb;font-size:16px;color:#0a1f57}
+.card .card-body{padding:12px 16px}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{border-bottom:1px solid #e2e8f0;padding:10px 12px;text-align:left;font-size:14px;color:#334155}
+.table th{background:#f1f5f9;color:#0a1f57;font-weight:700}
+.small{font-size:12px;color:#64748b}
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="labtest-detail">
+  <section class="grid">
+    <article class="card">
+      <h3>Request Info</h3>
+      <div class="card-body">
+        <p><strong>Project:</strong> {{ req.project_name }}</p>
+        <!-- corrected fields -->
+        <p><strong>Client:</strong> {{ req.client_name|default:"—" }}</p>
+        <p><strong>Location:</strong> {{ req.project_location|default:"—" }}</p>
+        <p><strong>Reference Number:</strong> {{ req.reference_number|default:"—" }}</p>
+        <p><strong>Status:</strong>
+          {% if request.user.is_staff or request.user.is_superuser %}
+          <form method="post" action="{% url 'dashboard_lab_test_update_status' req.id %}" style="display:inline-flex;gap:6px;align-items:center">
+            {% csrf_token %}
+            <select name="status" onchange="(function(sel){const inp=sel.closest('form').querySelector('.verif-code'); if(!inp) return; const show = sel.value==='report-delivered'; inp.style.display = show ? 'inline-block' : 'none'; inp.disabled = !show; if(!show) inp.value='';})(this)">
+              {% for val,label in status_choices %}
+                <option value="{{ val }}" {% if req.status == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+            <!-- show/hide and prefill verification code -->
+            <input type="text" name="verification_code" class="verif-code" inputmode="numeric" pattern="[0-9]{8}" maxlength="8" placeholder="8-digit code"
+              style="{% if req.status == 'report-delivered' %}display:inline-block{% else %}display:none{% endif %}; padding:4px 6px;border:1px solid #cbd5e1;border-radius:4px"
+              value="{{ req.report_verification_code|default:'' }}" />
+            <input type="hidden" name="next" value="{% url 'dashboard_lab_test_detail' req.id %}" />
+            <button class="btn btn-outline" type="submit" style="padding:4px 8px">Update</button>
+          </form>
+          {% else %}
+            {{ req.get_status_display }}
+          {% endif %}
+        </p>
+        <!-- attachments for lab tests -->
+        {% if req.spec_document %}
+        <p><a class="btn btn-outline" href="{{ req.spec_document.url }}" target="_blank" rel="noopener">Attachment (Spec)</a></p>
+        {% endif %}
+        {% if req.payment_receipt %}
+        <p><a class="btn btn-outline" href="{{ req.payment_receipt.url }}" target="_blank" rel="noopener">Payment Receipt</a></p>
+        {% endif %}
+        <!-- description and sample details -->
+        {% if req.description_html %}
+        <div class="mt-12">
+          <h4>Description</h4>
+          <div class="rich-text">{{ req.description_html|safe }}</div>
+        </div>
+        {% endif %}
+        <p><strong>Sample By:</strong> {{ req.sample_by|default:"—" }}</p>
+        <p><strong>Receiving Date:</strong> {% if req.receiving_date %}{{ req.receiving_date|date:"d/m/Y" }}{% else %}—{% endif %}</p>
+        {% if req.sample_description %}
+        <p><strong>Sample Description:</strong> {{ req.sample_description }}</p>
+        {% endif %}
+      </div>
+    </article>
+
+    <aside class="card">
+      <h3>Items</h3>
+      <div class="card-body">
+        {% if items %}
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Test Name</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for it in items %}
+            <tr>
+              <td>{{ it.test_name }}</td>
+              <td>
+                {% if request.user.is_staff or request.user.is_superuser %}
+                <form method="post" action="{% url 'dashboard_lab_test_update_item_price' it.id %}" style="display:inline-flex;gap:6px;align-items:center">
+                  {% csrf_token %}
+                  <span>৳</span>
+                  <input type="number" name="price" min="0" step="1" value="{{ it.price }}" style="width:110px;padding:4px 6px;border:1px solid #cbd5e1;border-radius:4px"/>
+                  <input type="hidden" name="next" value="{% url 'dashboard_lab_test_detail' req.id %}" />
+                  <button class="btn btn-outline" type="submit" style="padding:4px 8px">Save</button>
+                </form>
+                {% else %}
+                  ৳ {{ it.price }}
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div class="small" style="margin-top:8px"><strong>Total:</strong> ৳ {{ total_amount }}</div>
+        {% else %}
+        <p class="small">No items added.</p>
+        {% endif %}
+
+        {% if request.user.is_staff or request.user.is_superuser %}
+        <hr/>
+        <p class="small"><strong>Update Status:</strong></p>
+        <form method="post" action="{% url 'dashboard_lab_test_update_status' req.id %}" style="display:flex;gap:6px;align-items:center">
+          {% csrf_token %}
+          <select name="status" onchange="(function(sel){const inp=sel.closest('form').querySelector('.verif-code'); if(!inp) return; const show = sel.value==='report-delivered'; inp.style.display = show ? 'inline-block' : 'none'; inp.disabled = !show; if(!show) inp.value='';})(this)">
+            {% for val,label in status_choices %}
+              <option value="{{ val }}" {% if req.status == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+          <input type="text" name="verification_code" class="verif-code" placeholder="8-digit code" pattern="[0-9]{8}" inputmode="numeric" maxlength="8"
+            style="{% if req.status == 'report-delivered' %}display:inline-block{% else %}display:none{% endif %}; padding:4px 6px; border:1px solid #cbd5e1; border-radius:4px"
+            value="{{ req.report_verification_code|default:'' }}">
+          <input type="hidden" name="next" value="{% url 'dashboard_lab_test_detail' req.id %}" />
+          <button class="btn btn-outline" type="submit" style="padding:4px 8px">Update</button>
+        </form>
+        {% endif %}
+      </div>
+    </aside>
+  </section>
+
+  <!-- <footer class="page-note">© 2025, All rights reserved by CATS–MIST (CE).</footer> -->
+</main>
+{% endblock %}

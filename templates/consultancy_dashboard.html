@@ -1,0 +1,593 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Consultancy – Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<style>
+/* Scoped styles for Consultancy page */
+.dashboard-layout .cons-header{display:flex;align-items:center;gap:8px}
+.dashboard-layout .toggle-group{display:flex;gap:8px;margin-right:8px}
+.dashboard-layout .btn-toggle{padding:8px 12px;border:1px solid #d5dae1;border-radius:8px;background:#fff;color:#0a1f57;font-weight:600}
+.dashboard-layout .btn-toggle.active{background:#0a1f57;color:#fff;border-color:#0a1f57}
+
+.dashboard-layout .prev-layout{display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:start}
+@media (max-width:1024px){.dashboard-layout .prev-layout{grid-template-columns:1fr}}
+.dashboard-layout .request-layout{display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:start}
+@media (max-width:1024px){.dashboard-layout .request-layout{grid-template-columns:1fr}}
+
+.dashboard-layout .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 22px rgba(20,24,38,.08)}
+.dashboard-layout .card h3{margin:0;padding:14px 16px;border-bottom:1px solid #e5e7eb;font-size:16px;color:#0a1f57}
+.dashboard-layout .card-body{padding:12px 16px}
+.dashboard-layout .section-sub{font-size:13px;color:#64748b;margin-left:6px}
+
+.dashboard-layout .table{width:100%;border-collapse:collapse}
+.dashboard-layout .table th,.dashboard-layout .table td{border-bottom:1px solid #e2e8f0;padding:10px 12px;text-align:left;font-size:14px;color:#334155}
+.dashboard-layout .table th{background:#f1f5f9;color:#0a1f57;font-weight:700}
+.dashboard-layout .table-tools{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-bottom:8px}
+.dashboard-layout .search{position:relative;flex:0 1 360px}
+.dashboard-layout .search input{width:100%;padding:8px 36px 8px 32px;border:1px solid #d5dae1;border-radius:10px;font-size:14px}
+.dashboard-layout .search .icon-left{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#64748b}
+.dashboard-layout .search .refresh{border:1px solid #d5dae1;background:#fff;border-radius:8px;padding:6px 10px;cursor:pointer}
+.dashboard-layout .pagination-bar{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-top:1px solid #e5e7eb;color:#334155;font-size:14px}
+.dashboard-layout .pagination-bar .items select{padding:6px 10px;border:1px solid #d5dae1;border-radius:8px}
+
+.dashboard-layout .filter-panel{background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 22px rgba(20,24,38,.08);padding:16px}
+.dashboard-layout .filter-panel h4{margin:0 0 8px 0;font-size:15px;color:#334155}
+.dashboard-layout .filter-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.dashboard-layout .filter-list label{display:flex;align-items:center;gap:8px;padding:8px 6px;border-radius:8px;cursor:pointer}
+.dashboard-layout .filter-list label:hover{background:#f1f5f9}
+
+.dashboard-layout .hidden{display:none !important}
+.dashboard-layout .error{border-color:#ef4444 !important}
+
+/* Form */
+.dashboard-layout .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:900px){.dashboard-layout .form-grid{grid-template-columns:1fr}}
+.dashboard-layout label{font-size:13px;color:#334155;margin-bottom:4px;display:block}
+.dashboard-layout input[type="text"],.dashboard-layout input[type="date"],.dashboard-layout select,.dashboard-layout textarea{width:100%;padding:8px 10px;border:1px solid #d5dae1;border-radius:8px;font-size:14px}
+.dashboard-layout .full{grid-column:1 / -1}
+.dashboard-layout .rich-editor{border:1px solid #d5dae1;border-radius:8px;overflow:hidden;background:#fff}
+.dashboard-layout .rich-toolbar{display:flex;gap:8px;padding:8px;background:#f8fafc;border-bottom:1px solid #e5e7eb}
+.dashboard-layout .rich-toolbar button{border:1px solid #d5dae1;background:#fff;border-radius:6px;padding:6px 8px;cursor:pointer}
+.dashboard-layout .rich-area{min-height:160px;padding:10px;outline:none}
+.dashboard-layout .form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+.dashboard-layout .btn-primary{background:#0a1f57;color:#fff;border:none}
+.dashboard-layout .btn-primary:hover{background:#0c2a7a}
+
+/* New: Amount and receipt UI */
+.dashboard-layout .amount-input{display:none;margin-left:6px;padding:4px 6px;border:1px solid #cbd5e1;border-radius:4px;width:120px}
+.dashboard-layout .receipt-form{display:flex;gap:6px;align-items:center;margin-top:6px}
+.dashboard-layout .status-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border:1px solid #e5e7eb;border-radius:999px;font-size:12px;color:#64748b;margin-top:6px}
+.dashboard-layout .status-pill .dot{width:8px;height:8px;border-radius:50%;background:#94a3b8}
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="dashboard-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">CATS–MIST (EECE)</div>
+    <nav class="sidebar-nav">
+      <a href="{% url 'home' %}" class="item">Homepage</a>
+      <a href="{% url 'dashboard' %}" class="item">Dashboard</a>
+      <a href="{% url 'dashboard_lab_tests' %}" class="item">Lab Tests</a>
+      <a href="{% url 'dashboard_consultancy' %}" class="item active">Consultancy</a>
+      <a href="{% url 'dashboard_profile' %}" class="item">User Profile</a>
+      <a href="{% url 'dashboard_how_to_pay' %}" class="item">How to Pay</a>
+      <a href="{% url 'dashboard_help' %}" class="item">Get Help</a>
+      <div class="sidebar-contact">Contact Webmaster<br><span class="small">+88 01300737109</span></div>
+    </nav>
+  </aside>
+
+  <!-- Main content -->
+  <section class="main">
+    <header class="main-top">
+      <div class="cons-header">
+        <h2 id="sectionTitle">All Consultancy</h2>
+        <span class="section-sub" id="subTitle">Consultancy Projects <span id="projectsCount">0</span></span>
+      </div>
+      <div class="top-actions">
+        <div class="toggle-group" role="tablist" aria-label="Consultancy Views">
+          <button class="btn btn-toggle active" id="togglePrevious" role="tab" aria-selected="true">Previous Consultancy</button>
+          <button class="btn btn-toggle" id="toggleRequest" role="tab" aria-selected="false">Request New Consultancy</button>
+        </div>
+        <div class="user-pill">
+          <span class="dot" aria-hidden="true"></span>
+          {{ profile.full_name|default:request.user.username }}
+        </div>
+        <a class="btn btn-outline" href="{% url 'logout' %}?next={% url 'login' %}">Logout</a>
+      </div>
+    </header>
+
+    <!-- Previous Consultancy view -->
+    <div id="viewPrevious" class="prev-layout">
+      <article class="card">
+        <h3>Details</h3>
+        <div class="card-body">
+          <div class="table-tools">
+            <div class="search">
+              <span class="icon-left">🔍</span>
+              <input id="searchInput" type="text" placeholder="Search by project or organization" aria-label="Search previous consultancy"/>
+            </div>
+            <button id="refreshBtn" class="refresh" title="Refresh">↻</button>
+          </div>
+          <table class="table" aria-label="consultancy details table">
+            <thead>
+              <tr>
+                <th>Details</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="projectsBody">
+              <tr>
+                <td colspan="4" class="no-data">No Data</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination-bar">
+          <div class="goto">Go to 1</div>
+          <div class="items">Show items <select id="itemsPerPage"><option value="20" selected>20/page</option><option value="50">50/page</option><option value="100">100/page</option></select></div>
+          <div class="total">Total <span id="totalCount">0</span></div>
+        </div>
+      </article>
+
+      <aside class="filter-panel">
+        <h4>Filter</h4>
+        <div role="radiogroup" aria-label="Status filters" class="filter-list">
+          <label><input type="radio" name="statusFilter" value="all" checked/> All</label>
+          {% for key,label in status_choices %}
+          <label><input type="radio" name="statusFilter" value="{{ key }}"/> {{ label }}</label>
+          {% endfor %}
+        </div>
+      </aside>
+    </div>
+
+    <!-- Request New Consultancy view -->
+    <div id="viewRequest" class="request-layout hidden">
+      <div class="card full">
+        <h3>Request New Consultancy</h3>
+        <div class="card-body">
+          <form id="consultancyForm" method="post" enctype="multipart/form-data" class="full">
+            {% csrf_token %}
+            <input type="hidden" name="form" value="consultancy_request"/>
+            <div class="form-actions">
+              <a id="cancelRequest" class="btn btn-outline cancel" href="#cancel">Cancel</a>
+            </div>
+            <div class="form-grid">
+              <div class="full">
+                <label for="projectName">Project Name (Consultancy)*</label>
+                <input id="projectName" name="project_name" type="text" placeholder="Name of your project" required/>
+              </div>
+              <div>
+                <label for="organization">Organization</label>
+                <input id="organization" name="organization" type="text" placeholder="Organization"/>
+              </div>
+              <div>
+                <label for="location">Location</label>
+                <input id="location" name="location" type="text" placeholder="Location"/>
+              </div>
+              <div>
+                <label for="referenceNumber">Correspondence/Job Reference Number</label>
+                <input id="referenceNumber" name="reference_number" type="text" placeholder="l2l***"/>
+              </div>
+              <div>
+                <label for="attachment">Attachment (Max size: 10MB & PDF only)</label>
+                <input id="attachment" name="attachment" type="file" accept="application/pdf"/>
+              </div>
+            </div>
+
+            <label style="margin-top:10px">Description</label>
+            <div class="rich-editor" aria-label="Description editor">
+              <div class="rich-toolbar">
+                <button type="button" data-cmd="bold"><strong>B</strong></button>
+                <button type="button" data-cmd="italic"><em>I</em></button>
+                <button type="button" data-cmd="underline"><u>U</u></button>
+                <button type="button" data-cmd="strikeThrough"><s>S</s></button>
+                <button type="button" data-cmd="insertUnorderedList">• List</button>
+                <button type="button" data-cmd="insertOrderedList">1. List</button>
+                <button type="button" data-cmd="justifyLeft">Left</button>
+                <button type="button" data-cmd="justifyCenter">Center</button>
+                <button type="button" data-cmd="justifyRight">Right</button>
+              </div>
+              <div id="richArea" class="rich-area" contenteditable="true"></div>
+            </div>
+            <input type="hidden" id="descriptionHtml" name="description_html"/>
+
+            <div class="form-actions">
+              <button id="submitRequest" class="btn btn-primary" type="submit">Request for Consultancy</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- <footer class="page-note">© 2025, All rights reserved by CATS–MIST (CE).</footer> -->
+
+    <script>
+    // state and data
+    const projectsData = JSON.parse('{{ consultancies_json|default:"[]"|escapejs }}');
+    const isAdmin = {{ is_admin|yesno:"true,false" }};
+    const statusChoices = JSON.parse('{{ status_choices_json|default:"[]"|escapejs }}');
+    let filteredStatus = 'all';
+
+    // toggles
+    const togglePrev = document.getElementById('togglePrevious');
+    const toggleReq = document.getElementById('toggleRequest');
+    const viewPrev = document.getElementById('viewPrevious');
+    const viewReq  = document.getElementById('viewRequest');
+    const sectionTitle = document.getElementById('sectionTitle');
+    const subTitle = document.getElementById('subTitle');
+
+    function setActive(tab) {
+      if (tab === 'previous') {
+        togglePrev.classList.add('active'); togglePrev.setAttribute('aria-selected', 'true');
+        toggleReq.classList.remove('active'); toggleReq.setAttribute('aria-selected', 'false');
+        viewPrev.classList.remove('hidden');
+        viewReq.classList.add('hidden');
+        sectionTitle.textContent = 'All Consultancy';
+        subTitle.innerHTML = 'Consultancy Projects <span id="projectsCount">'+projectsData.length+'</span>';
+      } else {
+        toggleReq.classList.add('active'); toggleReq.setAttribute('aria-selected', 'true');
+        togglePrev.classList.remove('active'); togglePrev.setAttribute('aria-selected', 'false');
+        viewReq.classList.remove('hidden');
+        viewPrev.classList.add('hidden');
+        sectionTitle.textContent = 'Request New Consultancy';
+        subTitle.textContent = '';
+      }
+    }
+    togglePrev.addEventListener('click', () => setActive('previous'));
+    toggleReq.addEventListener('click', () => setActive('request'));
+    (function(){
+      try {
+        const initialView = new URLSearchParams(window.location.search).get('view');
+        if (initialView === 'request') setActive('request'); else setActive('previous');
+      } catch(err){ setActive('previous'); }
+    })();
+
+    // table rendering & filter
+    function renderTable() {
+      const body = document.getElementById('projectsBody');
+      body.innerHTML = '';
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = projectsData.filter(p => {
+        const statusOk = filteredStatus === 'all' ? true : p.status === filteredStatus;
+        const textOk = !q ? true : (p.details.toLowerCase().includes(q));
+        return statusOk && textOk;
+      });
+      if (!filtered.length) {
+        const tr = document.createElement('tr'); const td = document.createElement('td');
+        td.colSpan = 4; td.className = 'no-data'; td.textContent = 'No Data'; tr.appendChild(td); body.appendChild(tr);
+      } else {
+        filtered.forEach(p => {
+          const tr = document.createElement('tr');
+
+          // Details
+          const tdDetails = document.createElement('td');
+          tdDetails.textContent = p.details;
+          tr.appendChild(tdDetails);
+
+          // Status
+          const tdStatus = document.createElement('td');
+          if (isAdmin) {
+            const sel = document.createElement('select');
+            sel.className = 'status-select';
+            statusChoices.forEach(([value, label]) => {
+              const opt = document.createElement('option');
+              opt.value = value; opt.textContent = label; if (value === p.status) opt.selected = true;
+              sel.appendChild(opt);
+            });
+            const codeInput = document.createElement('input');
+            codeInput.type = 'text';
+            codeInput.className = 'verif-code';
+            codeInput.placeholder = '8-digit code';
+            codeInput.maxLength = 8;
+            codeInput.pattern = '[0-9]{8}';
+            codeInput.inputMode = 'numeric';
+            codeInput.style = 'display:none;margin-left:6px;padding:4px 6px;border:1px solid #cbd5e1;border-radius:4px';
+            // Prefill and initial visibility for delivered reports
+            codeInput.value = p.report_verification_code || '';
+            if (p.status === 'report-delivered') {
+              codeInput.style.display = 'inline-block';
+            }
+
+            // New: Amount input shown when status is approved
+            const amountInput = document.createElement('input');
+            amountInput.type = 'text';
+            amountInput.className = 'amount-input';
+            amountInput.placeholder = 'Amount (Tk)';
+            amountInput.value = p.amount || '';
+            if (p.status === 'approved') {
+              amountInput.style.display = 'inline-block';
+            }
+
+            sel.addEventListener('change', () => {
+              codeInput.style.display = sel.value === 'report-delivered' ? 'inline-block' : 'none';
+              amountInput.style.display = sel.value === 'approved' ? 'inline-block' : 'none';
+            });
+            tdStatus.appendChild(sel);
+            tdStatus.appendChild(codeInput);
+            tdStatus.appendChild(amountInput);
+          } else {
+            tdStatus.textContent = p.status_label || p.status;
+          }
+          tr.appendChild(tdStatus);
+
+          // Created
+          const tdCreated = document.createElement('td');
+          tdCreated.textContent = p.created;
+          tr.appendChild(tdCreated);
+
+          // Actions
+          const tdActions = document.createElement('td');
+          const viewLink = document.createElement('a');
+          viewLink.href = p.view_url; viewLink.className = 'btn btn-outline'; viewLink.style = 'padding:4px 8px'; viewLink.textContent = 'View';
+          tdActions.appendChild(viewLink);
+
+          if (isAdmin) {
+            const saveBtn = document.createElement('button');
+            saveBtn.className = 'btn btn-primary'; saveBtn.style = 'margin-left:8px;padding:4px 8px'; saveBtn.textContent = 'Save';
+            saveBtn.addEventListener('click', async (e) => {
+              e.preventDefault();
+              const status = tr.querySelector('.status-select').value;
+              const csrf = document.querySelector('input[name="csrfmiddlewaretoken"]')?.value || '';
+              try {
+                const formData = new URLSearchParams();
+                formData.set('status', status);
+                if (status === 'report-delivered') {
+                  const code = tr.querySelector('.verif-code')?.value.trim() || '';
+                  if (!/^[0-9]{8}$/.test(code)) { alert('Please enter a valid 8-digit code.'); return; }
+                  formData.set('verification_code', code);
+                }
+                // include amount if present
+                const amtEl = tr.querySelector('.amount-input');
+                const amtVal = (amtEl?.value || '').trim();
+                if (amtVal) { formData.set('amount', amtVal); }
+
+                formData.set('next', window.location.pathname + window.location.search);
+                const resp = await fetch(p.update_url, {
+                  method: 'POST',
+                  headers: { 'X-CSRFToken': csrf, 'Content-Type': 'application/x-www-form-urlencoded' },
+                  body: formData
+                });
+                if (resp.redirected) {
+                  window.location.href = resp.url;
+                } else if (resp.ok) {
+                  // Update row locally and rerender
+                  p.status = status;
+                  const match = statusChoices.find(([v]) => v === status);
+                  p.status_label = match ? match[1] : status;
+                  p.amount = amtVal || p.amount;
+                  renderTable();
+                } else {
+                  alert('Failed to update status.');
+                }
+              } catch(err) {
+                alert('Failed to update status.');
+              }
+            });
+            tdActions.appendChild(saveBtn);
+          } else {
+            // Non-admin: show amount and receipt upload if needed
+            if (p.amount) {
+              const amtDiv = document.createElement('div');
+              amtDiv.style.marginTop = '6px';
+              amtDiv.textContent = 'Amount: ৳ ' + p.amount;
+              tdActions.appendChild(amtDiv);
+            }
+            if (p.amount && !p.has_receipt) {
+              const form = document.createElement('form');
+              form.method = 'post';
+              form.action = p.upload_receipt_url;
+              form.enctype = 'multipart/form-data';
+              form.className = 'receipt-form';
+
+              const csrfInput = document.createElement('input');
+              csrfInput.type = 'hidden';
+              csrfInput.name = 'csrfmiddlewaretoken';
+              csrfInput.value = document.querySelector('input[name="csrfmiddlewaretoken"]')?.value || '';
+              form.appendChild(csrfInput);
+
+              const fileInput = document.createElement('input');
+              fileInput.type = 'file';
+              fileInput.name = 'payment_receipt';
+              fileInput.accept = 'application/pdf,image/*';
+              form.appendChild(fileInput);
+
+              const btn = document.createElement('button');
+              btn.type = 'submit';
+              btn.className = 'btn btn-outline';
+              btn.style = 'padding:4px 8px';
+              btn.textContent = 'Upload Receipt';
+              form.appendChild(btn);
+
+              tdActions.appendChild(form);
+            }
+            if (p.has_receipt) {
+              const thanks = document.createElement('div');
+              thanks.className = 'status-pill';
+              thanks.innerHTML = '<span class="dot" aria-hidden="true"></span> Thanks for payment';
+              tdActions.appendChild(thanks);
+            }
+            if (p.receipt_url) {
+              const link = document.createElement('div');
+              link.style.marginTop = '6px';
+              link.innerHTML = `<a href="${p.receipt_url}" target="_blank" rel="noopener">View Receipt</a>`;
+              tdActions.appendChild(link);
+            }
+          }
+
+          tr.appendChild(tdActions);
+          body.appendChild(tr);
+        });
+      }
+      document.getElementById('projectsCount').textContent = projectsData.length;
+      document.getElementById('totalCount').textContent = filtered.length;
+    }
+    renderTable();
+
+    document.querySelectorAll('input[name="statusFilter"]').forEach(r => {
+      r.addEventListener('change', e => { filteredStatus = e.target.value; renderTable(); });
+    });
+    document.getElementById('refreshBtn').addEventListener('click', renderTable);
+    document.getElementById('searchInput').addEventListener('input', renderTable);
+
+    // file constraints
+    const attachment = document.getElementById('attachment');
+    attachment.addEventListener('change', () => {
+      const f = attachment.files[0];
+      if (!f) return;
+      if (f.type !== 'application/pdf') { alert('Only PDF files are allowed.'); attachment.value=''; return; }
+      const sizeMB = f.size / (1024*1024);
+      if (sizeMB > 10) { alert('File size exceeds 10MB.'); attachment.value=''; return; }
+    });
+
+    // rich editor toolbar
+    document.querySelectorAll('.rich-toolbar button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const cmd = btn.getAttribute('data-cmd');
+        document.execCommand(cmd, false, null);
+        document.getElementById('richArea').focus();
+      });
+    });
+
+    // cancel & submit
+    document.getElementById('cancelRequest').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('projectName').value='';
+      document.getElementById('organization').value='';
+      document.getElementById('location').value='';
+      document.getElementById('referenceNumber').value='';
+      attachment.value='';
+      document.getElementById('richArea').innerHTML='';
+      setActive('previous');
+    });
+
+    document.getElementById('consultancyForm').addEventListener('submit', () => {
+      document.getElementById('descriptionHtml').value = document.getElementById('richArea').innerHTML;
+    });
+    </script>
+  </section>
+</main>
+{% endblock %}
+
+<script>
+// Prefilled data for previous consultancy requests (admin sees all)
+const DATA = JSON.parse('{{ consultancies_json|escapejs }}');
+const STATUS_CHOICES = JSON.parse('{{ status_choices_json|escapejs }}');
+const IS_ADMIN = {{ is_admin|yesno:"true,false" }};
+
+function renderPreviousConsultancies() {
+  const tbody = document.querySelector('#previous-consultancies tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  DATA.forEach(p => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><a href="${p.view_url}">${p.details}</a></td>
+      <td>${p.created}</td>
+      <td class="status-cell"></td>
+      <td>${IS_ADMIN ? '<span class="actions"></span>' : ''}</td>
+    `;
+    const statusCell = tr.querySelector('.status-cell');
+    statusCell.textContent = p.status_label;
+
+    if (IS_ADMIN) {
+      const actions = tr.querySelector('.actions');
+      // Build inline status edit control
+      const form = document.createElement('form');
+      form.method = 'post';
+      form.action = p.update_url;
+      form.style.display = 'inline-flex';
+      form.style.gap = '6px';
+      form.style.alignItems = 'center';
+
+      const csrf = document.createElement('input');
+      csrf.type = 'hidden';
+      csrf.name = 'csrfmiddlewaretoken';
+      csrf.value = '{{ csrf_token }}';
+      form.appendChild(csrf);
+
+      const next = document.createElement('input');
+      next.type = 'hidden';
+      next.name = 'next';
+      next.value = window.location.href;
+      form.appendChild(next);
+
+      const sel = document.createElement('select');
+      sel.name = 'status';
+      sel.style.padding = '4px 6px';
+      sel.style.border = '1px solid #cbd5e1';
+      sel.style.borderRadius = '4px';
+      STATUS_CHOICES.forEach(([val, label]) => {
+        const opt = document.createElement('option');
+        opt.value = val;
+        opt.textContent = label;
+        if (val === p.status) opt.selected = true;
+        sel.appendChild(opt);
+      });
+      form.appendChild(sel);
+
+      const codeInput = document.createElement('input');
+      codeInput.type = 'text';
+      codeInput.name = 'verification_code';
+      codeInput.placeholder = '8-digit code';
+      codeInput.pattern = '[0-9]{8}';
+      codeInput.inputMode = 'numeric';
+      codeInput.maxLength = 8;
+      codeInput.className = 'verif-code';
+      codeInput.style.display = 'none';
+      codeInput.style.padding = '4px 6px';
+      codeInput.style.border = '1px solid #cbd5e1';
+      codeInput.style.borderRadius = '4px';
+      codeInput.value = p.report_verification_code || '';
+      form.appendChild(codeInput);
+
+      // Initial visibility based on current status
+      if (sel.value === 'report-delivered') {
+        codeInput.style.display = 'inline-block';
+      }
+
+      sel.addEventListener('change', () => {
+        if (sel.value === 'report-delivered') {
+          codeInput.style.display = 'inline-block';
+        } else {
+          codeInput.style.display = 'none';
+          codeInput.value = '';
+        }
+      });
+
+      // New: amount field for admin
+      const amt = document.createElement('input');
+      amt.type = 'text';
+      amt.name = 'amount';
+      amt.placeholder = 'Amount (Tk)';
+      amt.style.padding = '4px 6px';
+      amt.style.border = '1px solid #cbd5e1';
+      amt.style.borderRadius = '4px';
+      amt.style.display = sel.value === 'approved' ? 'inline-block' : 'none';
+      amt.value = p.amount || '';
+      form.appendChild(amt);
+
+      sel.addEventListener('change', () => {
+        amt.style.display = sel.value === 'approved' ? 'inline-block' : 'none';
+      });
+
+      const btn = document.createElement('button');
+      btn.type = 'submit';
+      btn.textContent = 'Save';
+      btn.className = 'btn btn-outline';
+      form.appendChild(btn);
+
+      actions.appendChild(form);
+    }
+
+    tbody.appendChild(tr);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', renderPreviousConsultancies);
+</script>

@@ -1,0 +1,648 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Lab Tests – Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<style>
+/* Scoped styles for Lab Tests page (under .dashboard-layout) */
+.dashboard-layout .lab-tests-header{display:flex;align-items:center;gap:8px}
+.dashboard-layout .table{width:100%;border-collapse:collapse}
+.dashboard-layout .table th,.dashboard-layout .table td{border-bottom:1px solid #e2e8f0;padding:10px 12px;text-align:left;font-size:14px;color:#334155}
+.dashboard-layout .table th{background:#f1f5f9;color:#0a1f57;font-weight:700}
+.dashboard-layout .filter-panel{background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 22px rgba(20,24,38,.08);padding:16px}
+.dashboard-layout .filter-panel h4{margin:0 0 8px 0;font-size:15px;color:#334155}
+.dashboard-layout .filter-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.dashboard-layout .filter-list label{display:flex;align-items:center;gap:8px;padding:8px 6px;border-radius:8px;cursor:pointer}
+.dashboard-layout .filter-list label:hover{background:#f1f5f9}
+.dashboard-layout .status-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border:1px solid #e5e7eb;border-radius:999px;font-size:12px;color:#64748b}
+.dashboard-layout .status-pill .dot{width:8px;height:8px;border-radius:50%;background:#94a3b8}
+.dashboard-layout .btn-primary{background:#0a1f57;color:#fff;border:none}
+.dashboard-layout .btn-primary:hover{background:#0c2a7a}
+
+/* Toggles */
+.dashboard-layout .toggle-group{display:flex;gap:8px;margin-right:8px}
+.dashboard-layout .btn-toggle{padding:8px 12px;border:1px solid #d5dae1;border-radius:8px;background:#fff;color:#0a1f57;font-weight:600}
+.dashboard-layout .btn-toggle.active{background:#0a1f57;color:#fff;border-color:#0a1f57}
+
+/* Layouts */
+.dashboard-layout .prev-layout{display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:start}
+@media (max-width:1024px){.dashboard-layout .prev-layout{grid-template-columns:1fr}}
+.dashboard-layout .request-layout{display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:start}
+@media (max-width:1024px){.dashboard-layout .request-layout{grid-template-columns:1fr}}
+
+/* Cards */
+.dashboard-layout .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 22px rgba(20,24,38,.08)}
+.dashboard-layout .card h3{margin:0;padding:14px 16px;border-bottom:1px solid #e5e7eb;font-size:16px;color:#0a1f57}
+.dashboard-layout .card-body{padding:12px 16px}
+.dashboard-layout .section-sub{font-size:13px;color:#64748b;margin-left:6px}
+
+/* Table tools */
+.dashboard-layout .table-tools{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-bottom:8px}
+.dashboard-layout .search{position:relative;flex:0 1 360px}
+.dashboard-layout .search input{width:100%;padding:8px 36px 8px 32px;border:1px solid #d5dae1;border-radius:10px;font-size:14px}
+.dashboard-layout .search .icon-left{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#64748b}
+.dashboard-layout .search .refresh{border:1px solid #d5dae1;background:#fff;border-radius:8px;padding:6px 10px;cursor:pointer}
+.dashboard-layout .pagination-bar{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-top:1px solid #e5e7eb;color:#334155;font-size:14px}
+.dashboard-layout .pagination-bar .items select{padding:6px 10px;border:1px solid #d5dae1;border-radius:8px}
+
+/* Form */
+.dashboard-layout .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:900px){.dashboard-layout .form-grid{grid-template-columns:1fr}}
+.dashboard-layout label{font-size:13px;color:#334155;margin-bottom:4px;display:block}
+.dashboard-layout input[type="text"],.dashboard-layout input[type="date"],.dashboard-layout select,.dashboard-layout textarea{width:100%;padding:8px 10px;border:1px solid #d5dae1;border-radius:8px;font-size:14px}
+.dashboard-layout .rich-editor{border:1px solid #d5dae1;border-radius:8px;overflow:hidden;background:#fff}
+.dashboard-layout .rich-toolbar{display:flex;gap:8px;padding:8px;background:#f8fafc;border-bottom:1px solid #e5e7eb}
+.dashboard-layout .rich-toolbar button{border:1px solid #d5dae1;background:#fff;border-radius:6px;padding:6px 8px;cursor:pointer}
+.dashboard-layout .rich-area{min-height:120px;padding:10px;outline:none}
+.dashboard-layout .lab-row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end;margin-top:8px}
+.dashboard-layout .add-row{justify-self:start}
+.dashboard-layout .payment-card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 22px rgba(20,24,38,.08)}
+.dashboard-layout .payment-card h4{margin:0;padding:12px 16px;border-bottom:1px solid #e5e7eb;font-size:15px;color:#0a1f57}
+.dashboard-layout .payment-body{padding:12px 16px}
+.dashboard-layout .payment-item{display:flex;justify-content:space-between;margin:6px 0}
+.dashboard-layout .payment-empty{color:#64748b;font-size:14px}
+.dashboard-layout .hidden{display:none !important}
+.dashboard-layout .verif-code{padding:4px 6px;border:1px solid #cbd5e1;border-radius:4px}
+.dashboard-layout .error{border-color:#ef4444 !important}
+.dashboard-layout .form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+.dashboard-layout .btn-outline.cancel{color:#0a1f57}
+.dashboard-layout .btn-primary.submit{padding:10px 16px}
+
+/* Mobile: make Previous Tests section usable on small screens */
+@media (max-width: 860px){
+  /* Tools wrap and search expands */
+  .dashboard-layout .table-tools{flex-wrap:wrap;justify-content:flex-start;gap:6px}
+  .dashboard-layout .search{flex:1 1 100%}
+  .dashboard-layout .search input{width:100%}
+  /* Compact table spacing */
+  .dashboard-layout .table th,.dashboard-layout .table td{padding:8px 10px;font-size:13px}
+  .dashboard-layout .table td{word-break:break-word}
+  /* Pagination stacks */
+  .dashboard-layout .pagination-bar{flex-direction:column;align-items:flex-start;gap:6px}
+  /* Reduce overflow: hide Created column in Previous Tests */
+  #viewPrevious .table th:nth-child(4),
+  #viewPrevious .table td:nth-child(4){display:none}
+}
+@media (max-width: 640px){
+  /* Allow actions/buttons to wrap cleanly */
+  .dashboard-layout .table td a.btn{margin-top:6px}
+  .dashboard-layout .table td form .btn{margin-top:6px}
+}
+</style>
+{% endblock %}
+{% block content %}
+<main class="dashboard-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">CATS–MIST (EECE)</div>
+    <nav class="sidebar-nav">
+      <a href="{% url 'home' %}" class="item">Homepage</a>
+      <a href="{% url 'dashboard' %}" class="item">Dashboard</a>
+      <a href="{% url 'dashboard_lab_tests' %}" class="item active">Lab Tests</a>
+      <a href="{% url 'dashboard_consultancy' %}" class="item">Consultancy</a>
+      <a href="{% url 'dashboard_profile' %}" class="item">User Profile</a>
+      <a href="{% url 'dashboard_how_to_pay' %}" class="item">How to Pay</a>
+      <a href="{% url 'dashboard_help' %}" class="item">Get Help</a>
+      <div class="sidebar-contact">Contact Webmaster<br><span class="small">+88 01300737109</span></div>
+    </nav>
+  </aside>
+
+  <!-- Main content -->
+  <section class="main">
+    <header class="main-top">
+      <div class="lab-tests-header">
+        <h2 id="sectionTitle">All Lab Tests</h2>
+        <span class="section-sub" id="subTitle">Lab Tests <span id="testsCount">0</span></span>
+      </div>
+      <div class="top-actions">
+        <div class="toggle-group" role="tablist" aria-label="Lab Tests Views">
+          <button class="btn btn-toggle active" id="togglePrevious" role="tab" aria-selected="true">Previous Tests</button>
+          <button class="btn btn-toggle" id="toggleRequest" role="tab" aria-selected="false">Request New Test</button>
+        </div>
+        <div class="user-pill">
+          <span class="dot" aria-hidden="true"></span>
+          {{ profile.full_name|default:request.user.username }}
+        </div>
+        <a class="btn btn-outline" href="{% url 'logout' %}?next={% url 'login' %}">Logout</a>
+      </div>
+    </header>
+
+    <!-- Previous Tests view -->
+    <div id="viewPrevious" class="prev-layout">
+      <article class="card">
+        <h3>Lab Tests</h3>
+        <div class="card-body">
+          <div class="table-tools">
+            <div class="search">
+              <span class="icon-left">🔍</span>
+              <input id="searchInput" type="text" placeholder="Search By Reference Number, Name, Client" aria-label="Search previous tests"/>
+            </div>
+            <button id="refreshBtn" class="refresh" title="Refresh">↻</button>
+          </div>
+          <table class="table" aria-label="lab tests table">
+            <thead>
+              <tr>
+                <th>Details</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="testsBody">
+              {% if requests %}
+                {% for req in requests %}
+                <tr data-status="{{ req.status }}">
+                  <td>
+                    <div><strong>{{ req.project_name }}</strong></div>
+                    {% if req.reference_number %}<div>Ref: {{ req.reference_number }}</div>{% endif %}
+                    {% if req.client_name %}<div>Client: {{ req.client_name }}</div>{% endif %}
+                    {% if req.project_location %}<div>Location: {{ req.project_location }}</div>{% endif %}
+                    {% if req.items.all %}
+                      <div>Tests:
+                        {% for it in req.items.all %}
+                          {{ it.test_name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if request.user.is_staff or request.user.is_superuser %}
+                      <form method="post" action="{% url 'dashboard_lab_test_update_status' req.id %}" style="display:flex;gap:6px;align-items:center;">
+                        {% csrf_token %}
+                        <select name="status" onchange="(function(sel){const inp=sel.closest('form').querySelector('.verif-code'); if(!inp) return; inp.classList.toggle('hidden', sel.value!=='report-delivered');})(this)">
+                          {% for val,label in status_choices %}
+                            <option value="{{ val }}" {% if req.status == val %}selected{% endif %}>{{ label }}</option>
+                          {% endfor %}
+                        </select>
+                        <input type="text" name="verification_code" class="verif-code {% if req.status != 'report-delivered' %}hidden{% endif %}" placeholder="8-digit code" pattern="[0-9]{8}" inputmode="numeric" maxlength="8" value="{{ req.report_verification_code }}">
+                        <input type="hidden" name="next" value="{% url 'dashboard_lab_tests' %}" />
+                        <button class="btn btn-outline" type="submit" style="padding:4px 8px">Update</button>
+                      </form>
+                    {% else %}
+                      {{ req.get_status_display }}
+                    {% endif %}
+                  </td>
+                  <td>৳ {{ req.total_amount|default_if_none:0 }}</td>
+                  <td>{{ req.created_at|date:"d/m/Y H:i" }}</td>
+                  <td>
+                    <a class="btn btn-outline" href="{% url 'dashboard_lab_test_detail' req.id %}">View</a>
+                    {% if not req.payment_receipt %}
+                      <form method="post" action="{% url 'dashboard_labtests_upload_receipt' req.id %}" enctype="multipart/form-data" style="display:flex;gap:6px;align-items:center;margin-top:6px;">
+                        {% csrf_token %}
+                        <input type="file" name="payment_receipt" accept="application/pdf,image/*"/>
+                        <button class="btn btn-outline" type="submit" style="padding:4px 8px">Upload Receipt</button>
+                      </form>
+                    {% else %}
+                      <div class="status-pill" style="margin-top:6px"><span class="dot" aria-hidden="true"></span> Thanks for payment</div>
+                    {% endif %}
+                    {% if req.payment_receipt %}
+                      <div style="margin-top:6px"><a href="{{ req.payment_receipt.url }}" target="_blank" rel="noopener">View Receipt</a></div>
+                    {% endif %}
+                    {% if req.spec_document %}
+                      <div style="margin-top:6px"><a href="{{ req.spec_document.url }}" target="_blank" rel="noopener">Attachment</a></div>
+                    {% endif %}
+                    {% if request.user.is_staff or request.user.is_superuser %}
+                      <div style="margin-top:6px;color:#64748b">User: {{ req.user.username }}</div>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              {% else %}
+                <tr><td colspan="5" class="text-center">No previous tests.</td></tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination-bar">
+          <div class="goto">Go to 1</div>
+          <div class="items">Show items <select id="itemsPerPage"><option value="20" selected>20/page</option><option value="50">50/page</option><option value="100">100/page</option></select></div>
+          <div class="total">Total <span id="totalCount">0</span></div>
+        </div>
+      </article>
+
+      <aside class="filter-panel">
+        <h4>Filter</h4>
+        <div role="radiogroup" aria-label="Status filters" class="filter-list">
+          <label><input type="radio" name="statusFilter" value="all" checked/> All</label>
+          <label><input type="radio" name="statusFilter" value="requested"/> Requested</label>
+          <label><input type="radio" name="statusFilter" value="approved"/> Approved</label>
+          <label><input type="radio" name="statusFilter" value="declined"/> Declined</label>
+          <label><input type="radio" name="statusFilter" value="on-test"/> On-Test</label>
+          <label><input type="radio" name="statusFilter" value="ready-collect"/> Ready To Collect</label>
+          <label><input type="radio" name="statusFilter" value="report-delivered"/> Report Delivered</label>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Request New Test view -->
+    <div id="viewRequest" class="request-layout hidden">
+      <div class="card">
+        <h3>Request New Lab Test <a href="#" id="cancelRequest" class="btn btn-outline cancel" style="float:right">Cancel</a></h3>
+        <div class="card-body">
+          <form id="labRequestForm" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="form" value="lab_request"/>
+            <input type="hidden" id="itemsInput" name="items_json"/>
+            <input type="hidden" id="descriptionInput" name="description_html"/>
+
+            <div class="form-grid">
+              <div>
+                <label for="project_name">Project Name</label>
+                <input type="text" id="project_name" name="project_name" required>
+              </div>
+              <div>
+                <label for="reference_number">Reference Number</label>
+                <input type="text" id="reference_number" name="reference_number">
+              </div>
+              <div>
+                <label for="client_name">Client Name</label>
+                <input type="text" id="client_name" name="client_name">
+              </div>
+              <div>
+                <label for="project_location">Project Location</label>
+                <input type="text" id="project_location" name="project_location">
+              </div>
+              <div>
+                <label for="sample_by">Sample By</label>
+                <input type="text" id="sample_by" name="sample_by">
+              </div>
+              <div>
+                <label for="receiving_date">Receiving Date</label>
+                <input type="text" id="receiving_date" name="receiving_date" placeholder="dd/mm/yyyy" pattern="\d{2}/\d{2}/\d{4}" inputmode="numeric" title="Format: dd/mm/yyyy">
+              </div>
+              <div style="grid-column:1 / -1">
+                <label for="sample_description">Sample Description</label>
+                <textarea id="sample_description" name="sample_description" rows="3"></textarea>
+              </div>
+              <div style="grid-column:1 / -1">
+                <label>Description</label>
+                <div class="rich-editor">
+                  <div class="rich-toolbar">
+                    <button type="button" data-cmd="bold">Bold</button>
+                    <button type="button" data-cmd="italic">Italic</button>
+                    <button type="button" data-cmd="insertUnorderedList">• List</button>
+                  </div>
+                  <div id="descEditor" class="rich-area" contenteditable="true"></div>
+                </div>
+              </div>
+              <div style="grid-column:1 / -1">
+                <label for="spec_document">Attachment (Specification Document)</label>
+                <input type="file" id="spec_document" name="spec_document" accept="application/pdf,image/*">
+              </div>
+            </div>
+
+            <div class="payment-card" style="margin-top:12px">
+              <h4>Tests to Perform</h4>
+              <div class="payment-body">
+                <div class="lab-row">
+                  <div>
+                    <label for="itemLab">Category (Select Lab)</label>
+                    <select id="itemLab">
+                      <option value="" selected>Select Lab</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label for="itemSubcategory">Sub Category (Select Material)</label>
+                    <select id="itemSubcategory" disabled>
+                      <option value="" selected>Select Material</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label for="itemName">Test Name</label>
+                    <select id="itemName" disabled>
+                      <option value="" selected>Select Test</option>
+                    </select>
+                  </div>
+                  <div>
+                    <button type="button" id="addItemBtn" class="btn btn-outline add-row">Add Another Lab</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Removed local form submit to reposition submit into Payment Summary -->
+            <!-- <div class="form-actions">
+              <button id="submitRequest" class="btn btn-primary submit" type="button">Submit</button>
+            </div> -->
+          </form>
+        </div>
+      </div>
+      <aside class="payment-card">
+        <h4>Payment Summary</h4>
+        <div id="summaryContainer" class="payment-body">
+          <div class="payment-empty">Empty</div>
+        </div>
+        <div class="payment-body">
+          <!-- Replace How to Pay button with Submit button -->
+          <button id="submitRequest" class="btn btn-primary submit" type="button" style="width:100%">Submit</button>
+        </div>
+      </aside>
+    </div>
+
+    <script>
+    (function(){
+      const viewPrev = document.getElementById('viewPrevious');
+      const viewReq = document.getElementById('viewRequest');
+      const togglePrev = document.getElementById('togglePrevious');
+      const toggleReq = document.getElementById('toggleRequest');
+      const sectionTitle = document.getElementById('sectionTitle');
+      const subTitle = document.getElementById('subTitle');
+      let testsCountEl = document.getElementById('testsCount');
+      const totalCountEl = document.getElementById('totalCount');
+      const testsBody = document.getElementById('testsBody');
+      const searchInput = document.getElementById('searchInput');
+      const refreshBtn = document.getElementById('refreshBtn');
+      const submitBtn = document.getElementById('submitRequest');
+      const form = document.getElementById('labRequestForm');
+      const descriptionInput = document.getElementById('descriptionInput');
+      const descEditor = document.getElementById('descEditor');
+      const itemsInput = document.getElementById('itemsInput');
+      const addItemBtn = document.getElementById('addItemBtn');
+      const itemLabEl = document.getElementById('itemLab');
+      const itemSubEl = document.getElementById('itemSubcategory');
+      const itemNameEl = document.getElementById('itemName');
+      const summaryContainer = document.getElementById('summaryContainer');
+      const cancelBtn = document.getElementById('cancelRequest');
+      let items = [];
+      let currentPrice = 0;
+
+      // Test data copied from Test Rates page
+      const TEST_DATA = {
+        transformer: {
+          tests: [
+            { category:'Performance & Capacity test', name:'Performance Test (10 KVA up to 250KVA)', price:40000 },
+            { category:'Performance & Capacity test', name:'Performance Test (Above 250KVA to 500KVA)', price:50000 },
+            { category:'Performance & Capacity test', name:'Performance Test (Above 500KVA to 1250KVA)', price:60000 },
+            { category:'Performance & Capacity test', name:'Performance Test (Above 1250KVA to 2000KVA)', price:80000 },
+            { category:'Performance & Capacity test', name:'Performance Test (Above 2000KVA to 3000KVA)', price:100000 },
+            { category:'Performance & Capacity test', name:'Performance Test (Above 3000KVA)', price:150000 },
+            { category:'Individual/Single Test', name:'Winding resistance', price:5000 },
+            { category:'Individual/Single Test', name:'Insulation resistance', price:5000 },
+            { category:'Individual/Single Test', name:'Turn ratio test', price:5000 },
+            { category:'Individual/Single Test', name:'Vector group test', price:5000 },
+            { category:'Individual/Single Test', name:'No load loss & No load current measurement, Full load loss & impedance voltage test (10KVA to 250KVA)', price:30000 },
+            { category:'Individual/Single Test', name:'No load loss & No load current measurement, Full load loss & impedance voltage test (Above 250KVA to 500KVA)', price:40000 },
+            { category:'Individual/Single Test', name:'No load loss & No load current measurement, Full load loss & impedance voltage test (Above 500KVA to 1250KVA)', price:50000 },
+            { category:'Individual/Single Test', name:'No load loss & No load current measurement, Full load loss & impedance voltage test (Above 1250KVA to 2000KVA)', price:60000 },
+            { category:'Individual/Single Test', name:'No load loss & No load current measurement, Full load loss & impedance voltage test (Above 2000KVA to 3000KVA)', price:70000 },
+            { category:'Individual/Single Test', name:'Dielectric test of Transformer Oil', price:4000 },
+            { category:'Individual/Single Test', name:'Dielectric test of Transformer HT & LT With High Voltage', price:10000 },
+            { category:'Individual/Single Test', name:'Temperature rise test (10 KVA up to 250KVA)', price:10000 },
+            { category:'Individual/Single Test', name:'Temperature rise test (Above 250KVA to 500KVA)', price:15000 },
+            { category:'Individual/Single Test', name:'Temperature rise test (Above 500KVA to 1250KVA)', price:20000 },
+            { category:'Individual/Single Test', name:'Temperature rise test (Above 1250KVA to 2000KVA)', price:25000 },
+            { category:'Individual/Single Test', name:'Temperature rise test (Above 2000KVA to 3000KVA)', price:30000 },
+            { category:'Individual/Single Test', name:'Temperature rise test (Above 3000KVA)', price:35000 },
+            { category:'Individual/Single Test', name:'Lighting Impulse Test (Above 250KVA to 1250KVA)', price:20000 },
+            { category:'Individual/Single Test', name:'Lighting Impulse Test (500KVA & 1250KVA)', price:40000 },
+            { category:'Individual/Single Test', name:'Lighting Impulse Test (Above 1250KVA)', price:60000 },
+            { category:'Individual/Single Test', name:'DVDF Test (Above 250KVA to 500KVA)', price:20000 },
+            { category:'Individual/Single Test', name:'DVDF Test (Above 500KVA & Above)', price:30000 }
+          ]
+        },
+        cable: {
+          tests: [
+            { category:'All Performance test', name:'Performance Test (UP to 10rm)', price:20000 },
+            { category:'All Performance test', name:'Performance Test (10rm to 25rm)', price:25000 },
+            { category:'All Performance test', name:'Performance Test (25rm to 30rm)', price:30000 },
+            { category:'All Performance test', name:'Performance Test (50rm to 95rm)', price:40000 },
+            { category:'All Performance test', name:'Performance Test (95rm to 240rm)', price:60000 },
+            { category:'All Performance test', name:'Performance Test (240rm to 500rm)', price:80000 },
+            { category:'All Performance test', name:'Performance Test (500rm to 630rm)', price:100000 },
+            { category:'All Performance test', name:'Performance Test (Above 630rm)', price:130000 },
+            { category:'All Performance test', name:'Copper Purity Test', price:15000 },
+            { category:'Individual/Single Test', name:'Dimension test', price:10000 },
+            { category:'Individual/Single Test', name:'Insulation resistance test', price:5000 },
+            { category:'Individual/Single Test', name:'Current Carrying Capacity (up to 4rm)', price:20000 },
+            { category:'Individual/Single Test', name:'Current Carrying Capacity (Above 10rm up to 20rm)', price:40000 },
+            { category:'Individual/Single Test', name:'Current Carrying Capacity (90rm)', price:60000 },
+            { category:'Individual/Single Test', name:'Current Carrying Capacity (180rm & Above)', price:100000 },
+            { category:'Individual/Single Test', name:'Power Frequency high voltage withstand test (LT)', price:10000 },
+            { category:'Individual/Single Test', name:'Power Frequency high voltage withstand test (HT)', price:12000 }
+          ]
+        },
+        generator: {
+          tests: [
+            { category:'Load Test & Performance test', name:'Performance Test (Up to 20KVA)', price:30000 },
+            { category:'Load Test & Performance test', name:'Performance Test (Above 20KVA to 50KVA)', price:40000 },
+            { category:'Load Test & Performance test', name:'Performance Test (Above 50KVA to 80KVA)', price:50000 },
+            { category:'Load Test & Performance test', name:'Performance Test (Above 80KVA to 100KVA)', price:60000 },
+            { category:'Load Test & Performance test', name:'Performance Test (Above 100KVA to 300KVA)', price:80000 },
+            { category:'Load Test & Performance test', name:'Performance Test (Above 300KVA to 500KVA)', price:100000 },
+            { category:'Individual/Single Test', name:'Insulation resistance test', price:5000 },
+            { category:'Individual/Single Test', name:'High voltage withstand test', price:10000 },
+            { category:'Individual/Single Test', name:'Load test', price:40000 },
+            { category:'Individual/Single Test', name:'Fuel Consumption Test', price:20000 },
+            { category:'Individual/Single Test', name:'Tripping & Non-Tripping Test', price:5000 },
+            { category:'Individual/Single Test', name:'Sound Level Test', price:5000 }
+          ]
+        },
+        misc: {
+          tests: [
+            { category:'Battery', name:'Capacity Test of Battery (12v-24v & 80AH-200AH)', price:35000 },
+            { category:'Fan', name:'Fan Performance Test', price:30000 },
+            { category:'Testers', name:'Earth tester/Insulation tester/Instrument Performance', price:25000 },
+            { category:'Solar', name:'Solar Panel Test (watt peak & efficiency measurement)', price:20000 },
+            { category:'Solar', name:'Solar Inverter Test (efficiency test) (Up to 10KW)', price:30000 },
+            { category:'Solar', name:'Solar Inverter Test (efficiency test) (Above 10KW)', price:40000 },
+            { category:'Insulator', name:'Insulator test 11kV (Dielectric strength)', price:40000 },
+            { category:'Insulator', name:'Insulator test 33kV (Dielectric strength) (Dry & Wet Condition)', price:50000 },
+            { category:'Motor', name:'Motor Capacity test (1HP-40HP)', price:40000 },
+            { category:'Motor', name:'Motor Capacity test (Above 40HP)', price:60000 },
+            { category:'Busbar', name:'Busbar Trunking BBT (Above 500A to 1200A)', price:50000 },
+            { category:'Busbar', name:'Busbar Trunking BBT (Above 1200A to 2000A)', price:80000 },
+            { category:'Busbar', name:'Busbar Trunking BBT (Above 2000A)', price:80000 },
+            { category:'LED', name:'LED Lamp Test', price:15000 }
+          ]
+        }
+      };
+
+      function unique(arr){ return Array.from(new Set(arr)); }
+      function populateLabOptions(){
+        if(!itemLabEl) return;
+        const labs = [
+          { key: 'transformer', label: 'Transformer' },
+          { key: 'cable', label: 'Cable' },
+          { key: 'generator', label: 'Generator' },
+          { key: 'misc', label: 'Miscellaneous' },
+        ];
+        itemLabEl.innerHTML = '<option value="">Select Lab</option>' + labs.map(l => `<option value="${l.key}">${l.label}</option>`).join('');
+        if(itemSubEl) { itemSubEl.innerHTML = '<option value="">Select Material</option>'; itemSubEl.disabled = true; }
+        if(itemNameEl) { itemNameEl.innerHTML = '<option value="">Select Test</option>'; itemNameEl.disabled = true; }
+      }
+      function populateSubcategories(){
+        if(!itemLabEl || !itemSubEl) return;
+        const labKey = itemLabEl.value;
+        if(!labKey){ itemSubEl.innerHTML = '<option value="">Select Material</option>'; itemSubEl.disabled = true; return; }
+        const cats = unique(TEST_DATA[labKey].tests.map(t => t.category));
+        itemSubEl.innerHTML = '<option value="">Select Material</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
+        itemSubEl.disabled = false;
+        if(itemNameEl){ itemNameEl.innerHTML = '<option value="">Select Test</option>'; itemNameEl.disabled = true; }
+      }
+      function populateTestNames(){
+        if(!itemLabEl || !itemSubEl || !itemNameEl) return;
+        const labKey = itemLabEl.value;
+        const cat = itemSubEl.value;
+        if(!labKey || !cat){ itemNameEl.innerHTML = '<option value="">Select Test</option>'; itemNameEl.disabled = true; return; }
+        const tests = TEST_DATA[labKey].tests.filter(t => t.category === cat);
+        itemNameEl.innerHTML = '<option value="">Select Test</option>' + tests.map(t => `<option value="${t.name}" data-price="${t.price}">${t.name}</option>`).join('');
+        itemNameEl.disabled = false;
+      }
+
+      // View helpers
+      function getVisibleCount(){
+        if(!testsBody) return 0;
+        return Array.from(testsBody.querySelectorAll('tr')).filter(r => r.style.display !== 'none').length;
+      }
+      function applyFilters(){
+        if(!testsBody) return;
+        const q = (searchInput && searchInput.value || '').trim().toLowerCase();
+        const statusEl = document.querySelector('input[name="statusFilter"]:checked');
+        const statusVal = statusEl ? statusEl.value : 'all';
+        const rows = Array.from(testsBody.querySelectorAll('tr'));
+        rows.forEach(row => {
+          let ok = true;
+          const rowStat = row.getAttribute('data-status');
+          if(statusVal !== 'all' && rowStat !== statusVal) ok = false;
+          if(ok && q){
+            const text = row.textContent.toLowerCase();
+            if(!text.includes(q)) ok = false;
+          }
+          row.style.display = ok ? '' : 'none';
+        });
+        const visible = rows.filter(r => r.style.display !== 'none').length;
+        if(testsCountEl) testsCountEl.textContent = String(visible);
+        if(totalCountEl) totalCountEl.textContent = String(visible);
+      }
+      function setView(view){
+        if(view === 'request'){
+          viewPrev && viewPrev.classList.add('hidden');
+          viewReq && viewReq.classList.remove('hidden');
+          toggleReq && toggleReq.classList.add('active');
+          toggleReq && toggleReq.setAttribute('aria-selected','true');
+          togglePrev && togglePrev.classList.remove('active');
+          togglePrev && togglePrev.setAttribute('aria-selected','false');
+          sectionTitle && (sectionTitle.textContent = 'Request New Lab Test');
+          subTitle && (subTitle.textContent = 'Request Form');
+        } else {
+          viewReq && viewReq.classList.add('hidden');
+          viewPrev && viewPrev.classList.remove('hidden');
+          togglePrev && togglePrev.classList.add('active');
+          togglePrev && togglePrev.setAttribute('aria-selected','true');
+          toggleReq && toggleReq.classList.remove('active');
+          toggleReq && toggleReq.setAttribute('aria-selected','false');
+          sectionTitle && (sectionTitle.textContent = 'All Lab Tests');
+          testsCountEl = document.getElementById('testsCount');
+          const visible = getVisibleCount();
+          if(testsCountEl) testsCountEl.textContent = String(visible);
+          if(totalCountEl) totalCountEl.textContent = String(visible);
+        }
+      }
+
+      // Wire events for filters
+      togglePrev && togglePrev.addEventListener('click', () => setView('previous'));
+      toggleReq && toggleReq.addEventListener('click', () => setView('request'));
+      searchInput && searchInput.addEventListener('input', applyFilters);
+      document.querySelectorAll('input[name="statusFilter"]').forEach(radio => {
+        radio.addEventListener('change', applyFilters);
+      });
+      refreshBtn && refreshBtn.addEventListener('click', () => {
+        if(searchInput) searchInput.value = '';
+        const allRadio = document.querySelector('input[name="statusFilter"][value="all"]');
+        if(allRadio) allRadio.checked = true;
+        applyFilters();
+      });
+
+      // Cancel link
+      cancelBtn && cancelBtn.addEventListener('click', (e) => { e.preventDefault(); setView('previous'); });
+
+      // Rich editor toolbar
+      document.querySelectorAll('.rich-toolbar button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const cmd = btn.dataset.cmd;
+          if(cmd) document.execCommand(cmd, false, null);
+        });
+      });
+
+      // Items builder and summary rendering
+      function renderItems(){
+        if(!summaryContainer) return;
+        if(!items.length){
+          summaryContainer.innerHTML = '<div class="payment-empty">Empty</div>';
+          return;
+        }
+        const total = items.reduce((sum, it) => sum + (parseInt(it.price,10)||0), 0);
+        const rows = items.map((it, idx) => (
+          `<div class="payment-item"><span>${it.name} (${it.lab}${it.subcategory? ' • '+it.subcategory: ''})</span><span>৳ ${it.price}</span> <button type="button" data-idx="${idx}" class="btn btn-outline" style="padding:2px 6px;margin-left:8px">Remove</button></div>`
+        )).join('');
+        summaryContainer.innerHTML = rows + `<div class="payment-item" style="font-weight:600;border-top:1px solid #e5e7eb;margin-top:6px;padding-top:6px"><span>Total</span><span>৳ ${total}</span></div>`;
+        summaryContainer.querySelectorAll('button[data-idx]').forEach(b => {
+          b.addEventListener('click', () => {
+            const idx = parseInt(b.dataset.idx,10);
+            if(!isNaN(idx)){
+              items.splice(idx,1);
+              renderItems();
+            }
+          });
+        });
+      }
+
+      addItemBtn && addItemBtn.addEventListener('click', () => {
+        const lab = itemLabEl ? itemLabEl.value : '';
+        const subcategory = itemSubEl ? itemSubEl.value : '';
+        const name = itemNameEl ? itemNameEl.value : '';
+        const price = currentPrice || 0;
+        if(!lab || !subcategory || !name){
+          if(itemNameEl){ itemNameEl.classList.add('error'); itemNameEl.focus(); }
+          return;
+        }
+        if(itemNameEl) itemNameEl.classList.remove('error');
+        items.push({ lab, subcategory, name, price: parseInt(price||'0',10)||0 });
+        if(itemLabEl) itemLabEl.value='';
+        if(itemSubEl) { itemSubEl.value=''; itemSubEl.disabled = true; }
+        if(itemNameEl) { itemNameEl.value=''; itemNameEl.disabled = true; }
+        currentPrice = 0;
+        renderItems();
+      });
+
+      // Populate dependent dropdowns
+      itemLabEl && itemLabEl.addEventListener('change', populateSubcategories);
+      itemSubEl && itemSubEl.addEventListener('change', populateTestNames);
+      itemNameEl && itemNameEl.addEventListener('change', () => {
+        currentPrice = 0;
+        if(itemNameEl){
+          const opt = itemNameEl.options[itemNameEl.selectedIndex];
+          const p = opt ? parseInt(opt.getAttribute('data-price') || '0', 10) : 0;
+          currentPrice = p || 0;
+        }
+      });
+      populateLabOptions();
+
+      // Default view based on hash or query
+      const url = new URL(window.location.href);
+      if(window.location.hash === '#request' || url.searchParams.get('view') === 'request'){
+        setView('request');
+      } else {
+        setView('previous');
+        applyFilters();
+      }
+
+      // Submit handler for request form
+      if(submitBtn && form){
+        submitBtn.addEventListener('click', () => {
+          if(descriptionInput && descEditor){
+            descriptionInput.value = descEditor.innerHTML.trim();
+          }
+          if(itemsInput){
+            itemsInput.value = JSON.stringify(items);
+          }
+          form.submit();
+        });
+      }
+    })();
+    </script>
+  </section>
+</main>
+{% endblock %}
