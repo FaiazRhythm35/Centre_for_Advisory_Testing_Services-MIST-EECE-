@@ -1,5 +1,7 @@
 # CATS — MIST EECE Portal
 
+Visit: https://eece-cats.mist.ac.bd
+
 A Django-based portal for managing Lab Test requests, Consultancy projects, user dashboards, and report verification for CATS–MIST (Department of EECE).
 
 ## Features
